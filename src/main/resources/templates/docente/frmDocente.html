@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <meta charset="UTF-8">
+    <title>SISTEMA DE MATRICULAS</title>
+</head>
+<body>
+<script th:src="@{/scripts/web/docente/frmDocente.js}" type="text/javascript"></script>
+
+<nav th:replace="~{layout::menu}"></nav>
+<div class="card ">
+    <div class="card-header text-bg-dark mb-3">DOCENTES DE LA INSTITUCIÓN</div>
+    <div class="card-body">
+        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>Agregar Docente</button>
+        <hr />
+        <div id="mensaje"></div>
+        <table id="tbldocente" class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">NOMBRE</th>
+                <th scope="col">EMAIL</th>
+                <th scope="col">ACTIVO</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="docente :${listadocentes}">
+                <td th:text="${docente.iddocente}"></td>
+                <td th:text="${docente.nomdocente}"></td>
+                <td th:text="${docente.email}"></td>
+                <td th:text="${docente.activo}"></td>
+                <td>
+                    <button type="button" class="btn btn-info btnactualizar"
+                            th:data-iddocente="${docente.iddocente}"
+                            th:data-nomdocente="${docente.nomdocente}"
+                            th:data-email="${docente.email}"
+                            th:data-activo="${docente.activo}">
+                        <i class="fas fa-edit"></i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal Registrar / Actualizar Profesor -->
+<div class="modal fade" id="modalNuevo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">DOCENTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtNombreDocente" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="txtNombreDocente">
+                </div>
+                <div class="mb-3">
+                    <label for="txtEmailDocente" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="txtEmailDocente">
+                </div>
+                <input type="hidden" id="hddcoddocente" value="0">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnguardar" class="btn btn-primary"><i class="fas fa-save"></i>Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
