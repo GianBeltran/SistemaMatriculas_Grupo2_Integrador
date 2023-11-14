@@ -60,4 +60,30 @@ public class DocenteService {
         }
         throw new RuntimeException("Docente no encontrado con ID: " + iddocente);
     }
+
+    public ResultadoResponse cambiarEstadoDocente(Integer iddocente, String estado) {
+        String mensaje = "Estado del docente actualizado correctamente";
+        Boolean respuesta = true;
+
+        try {
+            Optional<Docente> docenteOp = docenteRepository.findById(iddocente);
+
+            if (docenteOp.isPresent()) {
+                Docente docente = docenteOp.get();
+                docente.setActivo(estado.equals("Activo"));
+                docenteRepository.save(docente);
+            } else {
+                mensaje = "Docente no encontrado con ID: " + iddocente;
+                respuesta = false;
+            }
+        } catch (Exception e) {
+            mensaje = "Error al cambiar el estado del docente";
+            respuesta = false;
+        }
+
+        return ResultadoResponse.builder()
+                .mensaje(mensaje)
+                .respuesta(respuesta)
+                .build();
+    }
 }

@@ -36,6 +36,10 @@
                             th:data-email="${docente.email}"
                             th:data-activo="${docente.activo}">
                         <i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger btnCambiarEstado"
+                            th:data-iddocente="${docente.iddocente}"
+                            th:data-nomdocente="${docente.nomdocente}">
+                        <i class="fas fa-edit"></i></button>
                 </td>
             </tr>
             </tbody>
@@ -68,5 +72,26 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Cambiar Estado -->
+<div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">CAMBIAR ESTADO DOCENTE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeModal"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarCambiarEstado">Sí</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </body>
 </html>

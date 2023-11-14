@@ -35,6 +35,48 @@ $(document).on("click", "#btnguardar", function(){
     $("#modalNuevo").modal("hide");
 });
 
+$(document).on("click", ".btnCambiarEstado", function() {
+    var idDocente = $(this).attr("data-iddocente");
+    var nomDocente = $(this).attr("data-nomdocente");
+
+    // Mostrar el modal con el mensaje y opciones
+    $("#mensajeModal").text("¿Quieres cambiar el estado de " + nomDocente + " a Inactivo?");
+    $("#modalCambiarEstado").modal("show");
+
+    // Capturar el clic en el botón "Sí" del modal
+    $("#btnConfirmarCambiarEstado").on("click", function() {
+        // Realizar la llamada AJAX para cambiar el estado
+        $.ajax({
+            type: "POST",
+            url: "/docente/cambiarEstado",
+            data: {
+                iddocente: idDocente,
+                estado: "Inactivo"
+            },
+            success: function(resultado) {
+                if (resultado.respuesta) {
+                    // Actualizar la lista de docentes después de cambiar el estado
+                    listarDocentes();
+                }
+                alert(resultado.mensaje);
+            }
+        });
+
+        // Ocultar el modal después de hacer la llamada
+        $("#modalCambiarEstado").modal("hide");
+
+        // Eliminar el evento clic del botón "Sí" para evitar duplicados
+        $("#btnConfirmarCambiarEstado").off("click");
+    });
+
+    // Capturar el clic en el botón "No" del modal
+    $("#modalCambiarEstado").on("hide.bs.modal", function() {
+        // Eliminar el evento clic del botón "Sí" para evitar duplicados
+        $("#btnConfirmarCambiarEstado").off("click");
+    });
+});
+
+
 function listarDocentes(){
     $.ajax({
         type: "GET",
@@ -47,13 +89,18 @@ function listarDocentes(){
                     "<td>"+value.iddocente+"</td>"+
                     "<td>"+value.nomdocente+"</td>"+
                     "<td>"+value.email+"</td>"+
+                    "<td>"+value.activo+"</td>"+
                     "<td>"+
                         "<button type='button' class='btn btn-info btnactualizar'"+
                                      "data-iddocente='"+value.iddocente+"'"+
                                      "data-nomdocente='"+value.nomdocente+"'"+
                                      "data-email='"+value.email+"'"+
-
                                      "><i class='fas fa-edit'></i></button>"+
+                         "<button type='button' class='btn btn-danger btnCambiarEstado'"+
+                                                     "data-iddocente='"+value.iddocente+"'"+
+                                                     "data-nomdocente='"+value.nomdocente+"'"+
+                                                 "><i class='fas fa-edit'></i></button>"+
+
                     "</td></tr>");
             })
         }

@@ -35,4 +35,10 @@ public class DocenteController {
     public ResultadoResponse guadarDocente(@RequestBody DocenteRequest docenteRequest){
         return docenteService.guardarDocente(docenteRequest);
     }
+
+    @ResponseBody
+    @PostMapping("/cambiarEstado")
+    public ResultadoResponse cambiarEstado(@RequestParam Integer iddocente, @RequestParam String estado) {
+        return docenteService.cambiarEstadoDocente(iddocente, estado);
+    }
 }
