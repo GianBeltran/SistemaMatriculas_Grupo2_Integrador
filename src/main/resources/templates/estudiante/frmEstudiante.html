@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
+    <meta charset="UTF-8">
+    <title>SISTEMA DE MATRICULAS</title>
+</head>
+<body>
+<script th:src="@{/scripts/web/estudiante/frmEstudiante.js}" type="text/javascript"></script>
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+<nav th:replace="~{layout::menu}"></nav>
+<div class="card ">
+    <div class="card-header text-bg-dark mb-3">ESTUDIANTES DE LA INSTITUCIÓN</div>
+    <div class="card-body">
+        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>Agregar Estudiante</button>
+        <hr />
+        <div id="mensaje"></div>
+        <table id="tblestudiante" class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">NOMBRE</th>
+                <th scope="col">APELLIDO</th>
+                <th scope="col">EMAIL</th>
+                <th scope="col">TELEFONO</th>
+                <th scope="col">FECHA NAC.</th>
+                <th scope="col">DIRECCION</th>
+                <th scope="col">ACTIVO</th>
+                <th scope="col">CREACION REG.</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="estudiante :${listaestudiantes}">
+                <td th:text="${estudiante.idestudiante}"></td>
+                <td th:text="${estudiante.nomestudiante}"></td>
+                <td th:text="${estudiante.apeestudiante}"></td>
+                <td th:text="${estudiante.email}"></td>
+                <td th:text="${estudiante.telefono}"></td>
+                <td th:text="${#dates.format(estudiante.fechanac, 'dd-MM-yyyy')}"></td>
+                <td th:text="${estudiante.direccion}"></td>
+                <td th:text="${estudiante.activo}"></td>
+                <td th:text="${#dates.format(estudiante.fechacrea, 'dd-MM-yyyy')}"></td>
+                <td>
+                    <button type="button" class="btn btn-info btnactualizar"
+                            th:data-idestudiante="${estudiante.idestudiante}"
+                            th:data-nomestudiante="${estudiante.nomestudiante}"
+                            th:data-apeestudiante="${estudiante.apeestudiante}"
+                            th:data-email="${estudiante.email}"
+                            th:data-telefono="${estudiante.telefono}"
+                            th:data-fechanac="${estudiante.fechanac}"
+                            th:data-direccion="${estudiante.direccion}"
+                            th:data-activo="${estudiante.activo}"
+                            th:data-fechacrea="${estudiante.fechacrea}">
+                        <i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger btnCambiarEstado"
+                            th:data-idestudiante="${estudiante.idestudiante}"
+                            th:data-nomestudiante="${estudiante.nomestudiante}"
+                            th:data-apeestudiante="${estudiante.apeestudiante}">
+                        <i class="fas fa-edit"></i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal Registrar / Actualizar Estudiante -->
+<div class="modal fade" id="modalNuevo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtNombreEstudiante" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="txtNombreEstudiante">
+                </div>
+                <div class="mb-3">
+                    <label for="txtApellidoEstudiante" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="txtApellidoEstudiante">
+                </div>
+                <div class="mb-3">
+                    <label for="txtEmailEstudiante" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="txtEmailEstudiante">
+                </div>
+                <div class="mb-3">
+                    <label for="txtTelefonoEstudiante" class="form-label">Telefono</label>
+                    <input type="text" class="form-control" id="txtTelefonoEstudiante">
+                </div>
+                <div class="mb-3">
+                    <label for="txtFechaNacEstudiante" class="form-label">Fecha de nacimiento</label>
+                    <input type="text" class="form-control" id="txtFechaNacEstudiante">
+                </div>
+                <div class="mb-3">
+                    <label for="txtDireccionEstudiante" class="form-label">Direccion</label>
+                    <input type="text" class="form-control" id="txtDireccionEstudiante">
+                </div>
+                <input type="hidden" id="hddcodestudiante" value="0">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnguardar" class="btn btn-primary"><i class="fas fa-save"></i>Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cambiar Estado -->
+<div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">CAMBIAR ESTADO ESTUDIANTE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeModal"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarCambiarEstado">Sí</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
