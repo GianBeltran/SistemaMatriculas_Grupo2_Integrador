@@ -5,14 +5,18 @@
     <title>SISTEMA DE MATRICULAS</title>
 </head>
 <body>
-<script th:src="@{/scripts/web/estudiante/frmEstudiante.js}" type="text/javascript"></script>
 <script src="https://momentjs.com/downloads/moment.min.js"></script>
+<script th:src="@{/scripts/web/estudiante/frmEstudiante.js}" type="text/javascript"></script>
 
 <nav th:replace="~{layout::menu}"></nav>
 <div class="card ">
     <div class="card-header text-bg-dark mb-3">ESTUDIANTES DE LA INSTITUCIÓN</div>
     <div class="card-body">
-        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>Agregar Estudiante</button>
+        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Estudiante</button>
+        <div class="d-flex justify-content-end mb-3">
+            <button id="btnbuscarNombre" type="button" class="btn btn-primary me-2"><i class="fas fa-search"></i> Buscar estudiante por Nombre</button>
+            <button id="btnbuscarApellido" type="button" class="btn btn-primary"><i class="fas fa-search"></i> Buscar estudiante por Apellido</button>
+        </div>
         <hr />
         <div id="mensaje"></div>
         <table id="tblestudiante" class="table">
@@ -41,6 +45,18 @@
                 <td th:text="${estudiante.activo}"></td>
                 <td th:text="${#dates.format(estudiante.fechacrea, 'dd-MM-yyyy')}"></td>
                 <td>
+                    <button type='button' class='btn btn-success btnDetalles'
+                            th:data-idestudiante="${estudiante.idestudiante}"
+                            th:data-nomestudiante="${estudiante.nomestudiante}"
+                            th:data-apeestudiante="${estudiante.apeestudiante}"
+                            th:data-email="${estudiante.email}"
+                            th:data-telefono="${estudiante.telefono}"
+                            th:data-fechanac="${estudiante.fechanac}"
+                            th:data-direccion="${estudiante.direccion}"
+                            th:data-activo="${estudiante.activo}"
+                            th:data-fechacrea="${estudiante.fechacrea}">
+                        <i class='fas fa-info-circle'></i></button>
+
                     <button type="button" class="btn btn-info btnactualizar"
                             th:data-idestudiante="${estudiante.idestudiante}"
                             th:data-nomestudiante="${estudiante.nomestudiante}"
@@ -56,13 +72,14 @@
                             th:data-idestudiante="${estudiante.idestudiante}"
                             th:data-nomestudiante="${estudiante.nomestudiante}"
                             th:data-apeestudiante="${estudiante.apeestudiante}">
-                        <i class="fas fa-edit"></i></button>
+                        <i class="fas fa-trash"></i></button>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
 <!-- Modal Registrar / Actualizar Estudiante -->
 <div class="modal fade" id="modalNuevo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -102,11 +119,77 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
-                <button type="button" id="btnguardar" class="btn btn-primary"><i class="fas fa-save"></i>Guardar</button>
+                <button type="button" id="btnguardar" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modals filtrar Estudiante -->
+<div class="modal fade" id="modalFiltrado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel3">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtBuscarNombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="txtBuscarNombre">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnfiltrarnombre" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modals filtrar Estudiante -->
+<div class="modal fade" id="modalFiltrado2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel4">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtBuscarApellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="txtBuscarApellido">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnfiltrarapellido" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals Detalles Estudiante -->
+<div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel5">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <!-- Modal Cambiar Estado -->
 <div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

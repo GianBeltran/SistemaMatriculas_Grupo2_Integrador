@@ -1,3 +1,5 @@
+$(document).ready(function() {
+
 $(document).on("click", "#btnagregar", function(){
     $("#txtNombreEstudiante").val("");
     $("#txtApellidoEstudiante").val("");
@@ -20,7 +22,6 @@ $(document).on("click", ".btnactualizar", function(){
     $("#txtEmailEstudiante").val($(this).attr("data-email"));
     $("#txtTelefonoEstudiante").val($(this).attr("data-telefono"));
     $("#txtFechaNacEstudiante").val(fechaFormateada);
-    //$("#txtFechaNacEstudiante").val($(this).attr("data-fechanac"));
     $("#txtDireccionEstudiante").val($(this).attr("data-direccion"));
 
     $("#hddcodestudiante").val($(this).attr("data-idestudiante"));
@@ -42,7 +43,6 @@ var fechaNacimiento = moment($("#txtFechaNacEstudiante").val(), "DD-MM-YYYY").to
             email: $("#txtEmailEstudiante").val(),
             telefono: $("#txtTelefonoEstudiante").val(),
             fechanac: fechaNacimiento,
-            //fechanac: $("#txtFechaNacEstudiante").val(),
             direccion: $("#txtDireccionEstudiante").val()
         }),
         success: function(resultado){
@@ -133,10 +133,161 @@ function listarEstudiantes(){
                                                      "data-idestudiante='"+value.idestudiante+"'"+
                                                      "data-nomestudiante='"+value.nomestudiante+"'"+
                                                      "data-apeestudiante='"+value.apeestudiante+"'"+
-                                                 "><i class='fas fa-edit'></i></button>"+
+                                                 "><i class='fas fa-trash'></i></button>"+
 
                     "</td></tr>");
             })
         }
     })
 }
+
+///////////////////////////////
+// Evento de clic para buscar por nombre
+$(document).on("click", "#btnbuscarNombre", function() {
+    $("#txtBuscarNombre").val("");
+    $("#modalFiltrado").modal("show");
+});
+$(document).on("click", "#btnfiltrarnombre", function() {
+    var nombre = $("#txtBuscarNombre").val();
+    // Realizar la llamada AJAX para buscar por nombre
+    realizarFiltro("nombre", nombre);
+    $("#modalFiltrado").modal("hide");
+});
+
+// Evento de clic para buscar por apellido
+$(document).on("click", "#btnbuscarApellido", function() {
+    $("#txtBuscarApellido").val("");
+    $("#modalFiltrado2").modal("show");
+});
+$(document).on("click", "#btnfiltrarapellido", function() {
+    var apellido = $("#txtBuscarApellido").val();
+    // Realizar la llamada AJAX para buscar por apellido
+    realizarFiltro("apellido", apellido);
+    $("#modalFiltrado2").modal("hide");
+});
+
+// Función para realizar el filtro
+function realizarFiltro(tipo, valor) {
+    // Determina la URL y el nombre del parámetro en función del tipo de búsqueda
+    var url;
+    var paramName;
+    if (tipo.toLowerCase() === "nombre") {
+        url = "/estudiante/buscarPornombre";
+        paramName = "nomestudiante";
+    } else if (tipo.toLowerCase() === "apellido") {
+        url = "/estudiante/buscarPorapellido";
+        paramName = "apeestudiante";
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: {
+            [paramName]: valor
+        },
+        dataType: "json",
+        success: function(resultado) {
+            if(resultado.length > 0) {
+                $("#tblestudiante > tbody").html("");
+                $.each(resultado, function(index, value) {
+                    var fechaNacimientoFormateada = moment(value.fechanac).format("DD-MM-YYYY");
+                    var fechaCreacionFormateada = moment(value.fechacrea).format("DD-MM-YYYY");
+
+                    $("#tblestudiante > tbody").append("<tr>"+
+                        "<td>"+value.idestudiante+"</td>"+
+                        "<td>"+value.nomestudiante+"</td>"+
+                        "<td>"+value.apeestudiante+"</td>"+
+                        "<td>"+value.email+"</td>"+
+                        "<td>"+value.telefono+"</td>"+
+                        "<td>"+fechaNacimientoFormateada+"</td>"+
+                        "<td>"+value.direccion+"</td>"+
+                        "<td>"+value.activo+"</td>"+
+                        "<td>"+fechaCreacionFormateada+"</td>"+
+                        "<td>"+
+                            "<button type='button' class='btn btn-info btnactualizar'"+
+                                "data-idestudiante='"+value.idestudiante+"'"+
+                                "data-nomestudiante='"+value.nomestudiante+"'"+
+                                "data-apeestudiante='"+value.apeestudiante+"'"+
+                                "data-email='"+value.email+"'"+
+                                "data-telefono='"+value.telefono+"'"+
+                                "data-fechanac='"+value.fechanac+"'"+
+                                "data-direccion='"+value.direccion+"'"+
+                                "><i class='fas fa-edit'></i></button>"+
+                            "<button type='button' class='btn btn-danger btnCambiarEstado'"+
+                                "data-idestudiante='"+value.idestudiante+"'"+
+                                "data-nomestudiante='"+value.nomestudiante+"'"+
+                                "data-apeestudiante='"+value.apeestudiante+"'"+
+                                "><i class='fas fa-trash'></i></button>"+
+                        "</td></tr>");
+                });
+            } else {
+                alert("No se encontraron estudiantes que contengan '" + valor + "'");
+                listarEstudiantes();
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al realizar el filtro:", error);
+
+            // Verifica si el servidor proporcionó un mensaje de error
+            var errorMessage = "Mensaje de error no disponible.";
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+
+            console.error("Detalles del error:", {
+                status: status,
+                errorMessage: errorMessage,
+                xhr: xhr
+            });
+        }
+    });
+}
+
+function llenarModalDetalles(detalles, noEditable) {
+    // Limpiar el contenido anterior del modal
+    $("#modalDetalles .modal-body").empty();
+
+    var fechaNacimientoFormateada = moment(detalles.fechanac).format("DD-MM-YYYY");
+    var fechaCreacionFormateada = moment(detalles.fechacrea).format("DD-MM-YYYY");
+
+    // Crear y agregar elementos HTML al modal para mostrar los detalles
+    var detallesHTML = "<ul>";
+    detallesHTML += "<li><strong>ID ESTUDIANTE:</strong> " + detalles.idestudiante + "</li>";
+    detallesHTML += "<br />"
+    detallesHTML += "<li><strong>NOMBRE:</strong> " + detalles.nomestudiante + "</li>";
+    detallesHTML += "<li><strong>APELLIDO:</strong> " + detalles.apeestudiante + "</li>";
+    detallesHTML += "<li><strong>EMAIL:</strong> " + detalles.email + "</li>";
+    detallesHTML += "<li><strong>TELÉFONO:</strong> " + detalles.telefono + "</li>";
+    detallesHTML += "<li><strong>FECHA DE NACIMIENTO:</strong> " + fechaNacimientoFormateada + "</li>";
+    detallesHTML += "<li><strong>DIRECCIÓN:</strong> " + detalles.direccion + "</li>";
+    detallesHTML += "<br />"
+    detallesHTML += "<li><strong>ACTIVO:</strong> " + detalles.activo + "</li>";
+    detallesHTML += "<li><strong>CREACIÓN DE REGISTRO:</strong> " + fechaCreacionFormateada + "</li>";
+    detallesHTML += "</ul>";
+
+    // Agregar detalles al cuerpo del modal
+    $("#modalDetalles .modal-body").html(detallesHTML);
+
+    // Mostrar el modal
+    $("#modalDetalles").modal("show");
+}
+
+
+$(document).on("click", ".btnDetalles", function () {
+    var detalles = {
+        idestudiante: $(this).attr("data-idestudiante"),
+        nomestudiante: $(this).attr("data-nomestudiante"),
+        apeestudiante: $(this).attr("data-apeestudiante"),
+        email: $(this).attr("data-email"),
+        telefono: $(this).attr("data-telefono"),
+        fechanac: $(this).attr("data-fechanac"),
+        direccion: $(this).attr("data-direccion"),
+        activo: $(this).attr("data-activo"),
+        fechacrea: $(this).attr("data-fechacrea"),
+    };
+
+    llenarModalDetalles(detalles, true); // true indica que los campos son no editables
+});
+
+});
+
