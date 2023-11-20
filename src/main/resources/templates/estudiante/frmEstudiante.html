@@ -13,6 +13,8 @@
     <div class="card-header text-bg-dark mb-3">ESTUDIANTES DE LA INSTITUCIÓN</div>
     <div class="card-body">
         <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Estudiante</button>
+        <button id="btnMostrarInforme" type="button" class="btn btn-primary me-2"><i class="fas fa-file-alt"></i> Mostrar Informe Completo</button>
+
         <div class="d-flex justify-content-end mb-3">
             <button id="btnbuscarNombre" type="button" class="btn btn-primary me-2"><i class="fas fa-search"></i> Buscar estudiante por Nombre</button>
             <button id="btnbuscarApellido" type="button" class="btn btn-primary"><i class="fas fa-search"></i> Buscar estudiante por Apellido</button>
@@ -22,28 +24,18 @@
         <table id="tblestudiante" class="table">
             <thead>
             <tr>
-                <th scope="col">ID</th>
                 <th scope="col">NOMBRE</th>
                 <th scope="col">APELLIDO</th>
                 <th scope="col">EMAIL</th>
-                <th scope="col">TELEFONO</th>
                 <th scope="col">FECHA NAC.</th>
-                <th scope="col">DIRECCION</th>
-                <th scope="col">ACTIVO</th>
-                <th scope="col">CREACION REG.</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="estudiante :${listaestudiantes}">
-                <td th:text="${estudiante.idestudiante}"></td>
                 <td th:text="${estudiante.nomestudiante}"></td>
                 <td th:text="${estudiante.apeestudiante}"></td>
                 <td th:text="${estudiante.email}"></td>
-                <td th:text="${estudiante.telefono}"></td>
                 <td th:text="${#dates.format(estudiante.fechanac, 'dd-MM-yyyy')}"></td>
-                <td th:text="${estudiante.direccion}"></td>
-                <td th:text="${estudiante.activo}"></td>
-                <td th:text="${#dates.format(estudiante.fechacrea, 'dd-MM-yyyy')}"></td>
                 <td>
                     <button type='button' class='btn btn-success btnDetalles'
                             th:data-idestudiante="${estudiante.idestudiante}"
@@ -183,12 +175,51 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal Informe Completo
+<div class="modal fade" id="modalInformeCompleto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel6">INFORME COMPLETO DE ESTUDIANTES</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+ -->
+
+<!-- Modal Informe Completo -->
+<div class="modal fade" id="modalInformeCompleto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel6">INFORME COMPLETO DE ESTUDIANTES</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6" id="columna1"></div>
+                    <div class="col-md-6" id="columna2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Modal Cambiar Estado -->

@@ -76,7 +76,6 @@ $(document).on("click", ".btnCambiarEstado", function() {
             },
             success: function(resultado) {
                 if (resultado.respuesta) {
-                    // Actualizar la lista de docentes después de cambiar el estado
                     listarEstudiantes();
                 }
                 alert(resultado.mensaje);
@@ -110,16 +109,21 @@ function listarEstudiantes(){
             var fechaCreacionFormateada = moment(value.fechacrea).format("DD-MM-YYYY");
 
                 $("#tblestudiante > tbody").append("<tr>"+
-                    "<td>"+value.idestudiante+"</td>"+
                     "<td>"+value.nomestudiante+"</td>"+
                     "<td>"+value.apeestudiante+"</td>"+
                     "<td>"+value.email+"</td>"+
-                    "<td>"+value.telefono+"</td>"+
                     "<td>"+fechaNacimientoFormateada+"</td>"+
-                    "<td>"+value.direccion+"</td>"+
-                    "<td>"+value.activo+"</td>"+
-                    "<td>"+fechaCreacionFormateada+"</td>"+
                     "<td>"+
+                    "<button type='button' class='btn btn-success btnDetalles'"+
+                                    "data-idestudiante='"+value.idestudiante+"'"+
+                                    "data-nomestudiante='"+value.nomestudiante+"'"+
+                                    "data-apeestudiante='"+value.apeestudiante+"'"+
+                                    "data-email='"+value.email+"'"+
+                                    "data-telefono='"+value.telefono+"'"+
+                                    "data-fechanac='"+value.fechanac+"'"+
+                                    "data-direccion='"+value.direccion+"'"+
+                                    "data-activo='"+value.activo+"'"+
+                                    "><i class='fas fa-info-circle'></i></button> " +
                         "<button type='button' class='btn btn-info btnactualizar'"+
                                      "data-idestudiante='"+value.idestudiante+"'"+
                                      "data-nomestudiante='"+value.nomestudiante+"'"+
@@ -128,7 +132,7 @@ function listarEstudiantes(){
                                      "data-telefono='"+value.telefono+"'"+
                                      "data-fechanac='"+value.fechanac+"'"+
                                      "data-direccion='"+value.direccion+"'"+
-                                     "><i class='fas fa-edit'></i></button>"+
+                                     "><i class='fas fa-edit'></i></button> " +
                          "<button type='button' class='btn btn-danger btnCambiarEstado'"+
                                                      "data-idestudiante='"+value.idestudiante+"'"+
                                                      "data-nomestudiante='"+value.nomestudiante+"'"+
@@ -194,16 +198,21 @@ function realizarFiltro(tipo, valor) {
                     var fechaCreacionFormateada = moment(value.fechacrea).format("DD-MM-YYYY");
 
                     $("#tblestudiante > tbody").append("<tr>"+
-                        "<td>"+value.idestudiante+"</td>"+
                         "<td>"+value.nomestudiante+"</td>"+
                         "<td>"+value.apeestudiante+"</td>"+
                         "<td>"+value.email+"</td>"+
-                        "<td>"+value.telefono+"</td>"+
                         "<td>"+fechaNacimientoFormateada+"</td>"+
-                        "<td>"+value.direccion+"</td>"+
-                        "<td>"+value.activo+"</td>"+
-                        "<td>"+fechaCreacionFormateada+"</td>"+
                         "<td>"+
+                        "<button type='button' class='btn btn-success btnDetalles'"+
+                                   "data-idestudiante='"+value.idestudiante+"'"+
+                                   "data-nomestudiante='"+value.nomestudiante+"'"+
+                                   "data-apeestudiante='"+value.apeestudiante+"'"+
+                                   "data-email='"+value.email+"'"+
+                                   "data-telefono='"+value.telefono+"'"+
+                                   "data-fechanac='"+value.fechanac+"'"+
+                                   "data-direccion='"+value.direccion+"'"+
+                                   "data-activo='"+value.activo+"'"+
+                                   "><i class='fas fa-info-circle'></i></button> "+
                             "<button type='button' class='btn btn-info btnactualizar'"+
                                 "data-idestudiante='"+value.idestudiante+"'"+
                                 "data-nomestudiante='"+value.nomestudiante+"'"+
@@ -212,7 +221,7 @@ function realizarFiltro(tipo, valor) {
                                 "data-telefono='"+value.telefono+"'"+
                                 "data-fechanac='"+value.fechanac+"'"+
                                 "data-direccion='"+value.direccion+"'"+
-                                "><i class='fas fa-edit'></i></button>"+
+                                "><i class='fas fa-edit'></i></button> "+
                             "<button type='button' class='btn btn-danger btnCambiarEstado'"+
                                 "data-idestudiante='"+value.idestudiante+"'"+
                                 "data-nomestudiante='"+value.nomestudiante+"'"+
@@ -288,6 +297,85 @@ $(document).on("click", ".btnDetalles", function () {
 
     llenarModalDetalles(detalles, true); // true indica que los campos son no editables
 });
+
+
+$(document).on("click", "#btnMostrarInforme", function() {
+    // Realizar la solicitud AJAX para obtener todos los estudiantes
+    $.ajax({
+        type: "GET",
+        url: "/estudiante/listar",
+        dataType: "json",
+        success: function(resultado) {
+            // Llenar y mostrar el modal con el nuevo formato de lista desordenada
+            llenarModalInformeCompleto(resultado);
+            $("#modalInformeCompleto").modal("show");
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al obtener el informe completo:", error);
+            alert("No se pudo obtener el informe completo. Por favor, inténtalo de nuevo más tarde.");
+        }
+    });
+});
+/*
+function llenarModalInformeCompleto(informeData) {
+    var ul = document.getElementById('modalInformeCompleto').getElementsByClassName('modal-body')[0];
+    ul.innerHTML = ''; // Limpiar contenido previo
+
+    informeData.forEach(function (estudiante) {
+        var li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.innerHTML = `
+            <strong>${estudiante.nomestudiante} ${estudiante.apeestudiante}</strong>
+            <ul>
+                <li>ID: ${estudiante.idestudiante}</li>
+                <li>Email: ${estudiante.email}</li>
+                <li>Teléfono: ${estudiante.telefono}</li>
+                <li>Fecha de Nacimiento: ${moment(estudiante.fechanac).format('DD-MM-YYYY')}</li>
+                <li>Dirección: ${estudiante.direccion}</li>
+                <li>Activo: ${estudiante.activo}</li>
+                <li>Creación Registro: ${moment(estudiante.fechacrea).format('DD-MM-YYYY')}</li>
+                <!-- Agrega más información si es necesario -->
+            </ul>
+            <hr />
+        `;
+        ul.appendChild(li);
+    });
+}
+*/
+
+function llenarModalInformeCompleto(informeData) {
+    var columna1 = document.getElementById('columna1');
+    var columna2 = document.getElementById('columna2');
+
+    columna1.innerHTML = ''; // Limpiar contenido previo
+    columna2.innerHTML = ''; // Limpiar contenido previo
+
+    informeData.forEach(function (estudiante, index) {
+        var li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.innerHTML = `
+            <strong>${estudiante.nomestudiante} ${estudiante.apeestudiante}</strong>
+            <ul>
+                <li>ID: ${estudiante.idestudiante}</li>
+                <li>Email: ${estudiante.email}</li>
+                <li>Teléfono: ${estudiante.telefono}</li>
+                <li>Fecha de Nacimiento: ${moment(estudiante.fechanac).format('DD-MM-YYYY')}</li>
+                <li>Dirección: ${estudiante.direccion}</li>
+                <li>Activo: ${estudiante.activo}</li>
+                <li>Creación Registro: ${moment(estudiante.fechacrea).format('DD-MM-YYYY')}</li>
+                <!-- Agrega más información si es necesario -->
+            </ul>
+            <hr />
+        `;
+
+        if (index % 2 === 0) {
+            columna1.appendChild(li);
+        } else {
+            columna2.appendChild(li);
+        }
+    });
+}
+
 
 });
 
