@@ -41,4 +41,17 @@ public class EstudianteController {
     public ResultadoResponse cambiarEstado(@RequestParam Integer idestudiante, @RequestParam String estado){
         return estudianteService.cambiarEstadoEstudiante(idestudiante, estado);
     }
+
+    ////////////////
+    @ResponseBody
+    @GetMapping("/buscarPornombre")
+    public List<Estudiante> buscarEstudiantesPorNombre(@RequestParam String nomestudiante){
+        return estudianteService.buscarEstudiantesPorNombre(nomestudiante);
+    }
+
+    @ResponseBody
+    @GetMapping("/buscarPorapellido")
+    public List<Estudiante> buscarEstudiantesPorApellido(@RequestParam String apeestudiante){
+        return estudianteService.buscarEstudiantePorApellido(apeestudiante);
+    }
 }

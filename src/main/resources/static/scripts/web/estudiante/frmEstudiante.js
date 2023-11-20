@@ -361,6 +361,7 @@ function llenarModalInformeCompleto(informeData) {
                 <li>Teléfono: ${estudiante.telefono}</li>
                 <li>Fecha de Nacimiento: ${moment(estudiante.fechanac).format('DD-MM-YYYY')}</li>
                 <li>Dirección: ${estudiante.direccion}</li>
+                <br />
                 <li>Activo: ${estudiante.activo}</li>
                 <li>Creación Registro: ${moment(estudiante.fechacrea).format('DD-MM-YYYY')}</li>
                 <!-- Agrega más información si es necesario -->
