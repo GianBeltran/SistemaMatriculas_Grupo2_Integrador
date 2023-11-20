@@ -30,7 +30,10 @@ $(document).on("click", ".btnactualizar", function(){
 });
 
 $(document).on("click", "#btnguardar", function(){
-var fechaNacimiento = moment($("#txtFechaNacEstudiante").val(), "DD-MM-YYYY").toDate();
+    if (!validarCampos()) {
+        return; // Detener el proceso si hay errores de validación
+    }
+    var fechaNacimiento = moment($("#txtFechaNacEstudiante").val(), "DD-MM-YYYY").toDate();
 
     $.ajax({
         type: "POST",
@@ -54,6 +57,60 @@ var fechaNacimiento = moment($("#txtFechaNacEstudiante").val(), "DD-MM-YYYY").to
     });
     $("#modalNuevo").modal("hide");
 });
+
+
+function validarCampos() {
+    // Validar campos aquí y mostrar mensajes de error si es necesario
+    var nombre = $("#txtNombreEstudiante").val();
+    var apellido = $("#txtApellidoEstudiante").val();
+    var email = $("#txtEmailEstudiante").val();
+    var telefono = $("#txtTelefonoEstudiante").val();
+    var fechaNacimiento = $("#txtFechaNacEstudiante").val();
+    var direccion = $("#txtDireccionEstudiante").val();
+
+    // Verificar campos vacíos
+    if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' ||
+        telefono.trim() === '' || fechaNacimiento.trim() === '' || direccion.trim() === '') {
+        alert("Por favor, complete todos los campos.");
+        return false;
+    }
+
+    // Validar email
+    if (!validarEmail(email)) {
+        alert("Por favor, ingrese un email válido con dominio @cibertec.edu.pe");
+        return false;
+    }
+    // Validar telefono
+    if (!validarTelefono(telefono)) {
+        alert("Por favor, ingrese un número de teléfono válido");
+        return false;
+    }
+    // Validar fecha de nacimiento
+    if (!validarFechaNacimiento(fechaNacimiento)) {
+        alert("Por favor, ingrese una fecha de nacimiento válida");
+        return false;
+    }
+    return true;
+}
+
+function validarEmail(email) {
+    // Validar el formato del correo electrónico con el dominio específico
+    var emailRegex = /^[a-zA-Z0-9._-]+@cibertec\.edu\.pe$/;
+    return emailRegex.test(email);
+}
+function validarTelefono(telefono) {
+    // Validar el formato del número de teléfono
+    var telefonoRegex = /^\d{3}-\d{3}-\d{3}$/;
+    return telefonoRegex.test(telefono);
+}
+function validarFechaNacimiento(fechaNacimiento) {
+    // Validar el formato de la fecha de nacimiento
+    var fechaNacimientoRegex = /^\d{2}-\d{2}-\d{4}$/;
+    return fechaNacimientoRegex.test(fechaNacimiento);
+}
+
+
+
 
 $(document).on("click", ".btnCambiarEstado", function() {
     var idEstudiante = $(this).attr("data-idestudiante");
@@ -316,32 +373,6 @@ $(document).on("click", "#btnMostrarInforme", function() {
         }
     });
 });
-/*
-function llenarModalInformeCompleto(informeData) {
-    var ul = document.getElementById('modalInformeCompleto').getElementsByClassName('modal-body')[0];
-    ul.innerHTML = ''; // Limpiar contenido previo
-
-    informeData.forEach(function (estudiante) {
-        var li = document.createElement('li');
-        li.className = 'list-group-item';
-        li.innerHTML = `
-            <strong>${estudiante.nomestudiante} ${estudiante.apeestudiante}</strong>
-            <ul>
-                <li>ID: ${estudiante.idestudiante}</li>
-                <li>Email: ${estudiante.email}</li>
-                <li>Teléfono: ${estudiante.telefono}</li>
-                <li>Fecha de Nacimiento: ${moment(estudiante.fechanac).format('DD-MM-YYYY')}</li>
-                <li>Dirección: ${estudiante.direccion}</li>
-                <li>Activo: ${estudiante.activo}</li>
-                <li>Creación Registro: ${moment(estudiante.fechacrea).format('DD-MM-YYYY')}</li>
-                <!-- Agrega más información si es necesario -->
-            </ul>
-            <hr />
-        `;
-        ul.appendChild(li);
-    });
-}
-*/
 
 function llenarModalInformeCompleto(informeData) {
     var columna1 = document.getElementById('columna1');
