@@ -14,6 +14,9 @@ $(document).on("click", "#btnagregar", function(){
 });
 
 $(document).on("click", ".btnactualizar", function(){
+    if (!validarCampos()) {
+        return; // Detener el proceso si hay errores de validación
+    }
     var fechaNac = $(this).attr("data-fechanac");
     var fechaFormateada = moment(fechaNac).format("DD-MM-YYYY");
 
