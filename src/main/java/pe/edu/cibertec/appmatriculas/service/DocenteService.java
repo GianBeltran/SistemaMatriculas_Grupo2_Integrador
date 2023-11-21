@@ -1,6 +1,7 @@
 package pe.edu.cibertec.appmatriculas.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import pe.edu.cibertec.appmatriculas.model.bd.Curso;
 import pe.edu.cibertec.appmatriculas.model.bd.Docente;
@@ -8,6 +9,8 @@ import pe.edu.cibertec.appmatriculas.model.request.DocenteRequest;
 import pe.edu.cibertec.appmatriculas.model.response.ResultadoResponse;
 import pe.edu.cibertec.appmatriculas.repository.DocenteRepository;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +31,7 @@ public class DocenteService {
     }
 
     public ResultadoResponse guardarDocente(DocenteRequest docente){
-        String mensaje = "Docente registrado correctamente";
+        String mensaje = "SISTEMA: Docente registrado correctamente";
         Boolean respuesta = true;
         try {
 
@@ -39,11 +42,12 @@ public class DocenteService {
             objDocente.setNomdocente(docente.getNomdocente());
             objDocente.setEmail(docente.getEmail());
             objDocente.setActivo(true);
+            objDocente.setFechacrea(Date.valueOf(LocalDate.now()));
 
             docenteRepository.save(objDocente);
 
         } catch (Exception e){
-            mensaje = "Docente no registrado";
+            mensaje = "ERROR: Docente no registrado";
             respuesta = false;
         }
         return ResultadoResponse.builder()

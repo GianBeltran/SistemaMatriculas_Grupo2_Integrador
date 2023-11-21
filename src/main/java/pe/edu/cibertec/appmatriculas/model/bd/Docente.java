@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,9 @@ public class Docente {
 
     @Column(name = "activo")
     private Boolean activo;
+
+    @Column(name = "fechacrea")
+    private Date fechacrea;
 
     @OneToMany(mappedBy = "docente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
