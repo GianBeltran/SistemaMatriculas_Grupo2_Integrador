@@ -12,7 +12,7 @@
 <div class="card ">
     <div class="card-header text-bg-dark mb-3">DOCENTES DE LA INSTITUCIÓN</div>
     <div class="card-body">
-        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i>Agregar Docente</button>
+        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Docente</button>
         <hr />
         <div id="mensaje"></div>
         <table id="tbldocente" class="table">
@@ -43,7 +43,7 @@
                     <button type="button" class="btn btn-danger btnCambiarEstado"
                             th:data-iddocente="${docente.iddocente}"
                             th:data-nomdocente="${docente.nomdocente}">
-                        <i class="fas fa-edit"></i></button>
+                        <i class="fas fa-trash"></i></button>
                 </td>
             </tr>
             </tbody>
@@ -60,8 +60,8 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="txtNombreDocente" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="txtNombreDocente" placeholder="Nombre y Apellido">
+                    <label for="txtNombreDocente" class="form-label">Nombre y Apellido</label>
+                    <input type="text" class="form-control" id="txtNombreDocente" placeholder="xxxxx xxxxxx" maxlength="50">
                 </div>
                 <div class="mb-3">
                     <label for="txtEmailDocente" class="form-label">Email</label>

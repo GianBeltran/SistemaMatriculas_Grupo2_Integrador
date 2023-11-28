@@ -29,6 +29,11 @@ public class DocenteController {
     public List<Docente> listarDocentes(){
         return docenteService.listarDocentes();
     }
+    @ResponseBody
+    @GetMapping("/listarActivos")
+    public List<Docente> listarDocentesActivos(){
+        return docenteService.listarDocentesActivos();
+    }
 
     @ResponseBody
     @PostMapping("/guardar")

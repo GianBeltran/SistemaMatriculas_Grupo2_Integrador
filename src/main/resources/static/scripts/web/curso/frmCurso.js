@@ -42,7 +42,7 @@ $(document).on("click", "#btnguardar", function(){
 function listarCboDocentes(iddocente){
     $.ajax({
         type: "GET",
-        url: "/docente/listar",
+        url: "/docente/listarActivos",
         dataType: "json",
         success: function(resultado){
             $.each(resultado, function(index, value){

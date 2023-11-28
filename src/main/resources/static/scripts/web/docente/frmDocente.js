@@ -131,7 +131,7 @@ function listarDocentes(){
                          "<button type='button' class='btn btn-danger btnCambiarEstado'"+
                                                      "data-iddocente='"+value.iddocente+"'"+
                                                      "data-nomdocente='"+value.nomdocente+"'"+
-                                                 "><i class='fas fa-edit'></i></button>"+
+                                                 "><i class='fas fa-trash'></i></button>"+
 
                     "</td></tr>");
             })
