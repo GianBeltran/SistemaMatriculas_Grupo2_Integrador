@@ -54,6 +54,19 @@ CREATE TABLE grado (
     PRIMARY KEY (idgrado)
 );
 
+CREATE TABLE matricula (
+    idmatricula INT AUTO_INCREMENT NOT NULL,
+    idestudiante INT,
+    idgrado INT,
+    fechamat DATE,
+    estado int,
+    observaciones varchar(1000),
+    PRIMARY KEY (idmatricula),
+    FOREIGN KEY (idestudiante) REFERENCES estudiante(idestudiante),
+    FOREIGN KEY (idgrado) REFERENCES grado(idgrado)
+);
+
+
 
 create table estudiante(
 	idestudiante int auto_increment not null,
