@@ -6,6 +6,6 @@ import lombok.Data;
 public class CursoRequest {
     private Integer idcurso;
     private String nomcurso;
-    private String nivel;
+    private Integer idgrado;
     private Integer iddocente;
 }

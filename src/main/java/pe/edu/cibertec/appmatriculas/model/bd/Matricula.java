@@ -6,24 +6,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "curso")
+@Table(name = "matricula")
 @Data @NoArgsConstructor @AllArgsConstructor
-public class Curso {
+public class Matricula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idcurso;
+    private Integer idmatricula;
 
-    @Column(name = "nomcurso")
-    private String nomcurso;
+    @ManyToOne
+    @JoinColumn(name = "idestudiante")
+    @JsonBackReference
+    private Estudiante estudiante;
 
     @ManyToOne
     @JoinColumn(name = "idgrado")
     @JsonBackReference
     private Grado grado;
 
-    @ManyToOne
-    @JoinColumn(name = "iddocente")
-    @JsonBackReference
-    private Docente docente;
+    @Column(name = "fechamat")
+    private Date fechamat;
+
+    @Column(name = "estado")
+    private Integer estado;
+
+    @Column(name = "observaciones")
+    private String observaciones;
 }

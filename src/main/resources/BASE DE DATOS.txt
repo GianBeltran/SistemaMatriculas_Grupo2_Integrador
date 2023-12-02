@@ -29,34 +29,43 @@ CREATE TABLE usuario_rol (
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 create table docente(
-iddocente int auto_increment not null,
-nomdocente varchar(100) null,
-email varchar(100) null,
-activo bool null,
-fechacrea date null,
-CONSTRAINT docentes_pk PRIMARY KEY (iddocente)
+	iddocente int auto_increment not null,
+	nomdocente varchar(100) null,
+	email varchar(100) null,
+	activo bool null,
+	fechacrea date null,
+	CONSTRAINT docentes_pk PRIMARY KEY (iddocente)
 );
 
-create table curso(
-idcurso int auto_increment not null,
-nomcurso varchar(100) null,
-nivel varchar(50) null,
-iddocente int,
-CONSTRAINT cursos_pk PRIMARY KEY (idcurso),
-CONSTRAINT docente_cursos_FK_1 FOREIGN KEY (iddocente) REFERENCES bd_sistemamatriculas.docente(iddocente)
+CREATE TABLE curso (
+    idcurso INT AUTO_INCREMENT NOT NULL,
+    nomcurso VARCHAR(100) NOT NULL,
+    idgrado INT,
+    iddocente INT,
+    PRIMARY KEY (idcurso),
+    FOREIGN KEY (idgrado) REFERENCES grado(idgrado),
+    FOREIGN KEY (iddocente) REFERENCES docente(iddocente)
 );
+
+
+CREATE TABLE grado (
+    idgrado INT AUTO_INCREMENT NOT NULL,
+    nomgrado VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idgrado)
+);
+
 
 create table estudiante(
-idestudiante int auto_increment not null,
-nomestudiante varchar(100) null,
-apeestudiante varchar(100) null,
-email varchar(200) null,
-telefono varchar(30) null,
-fechanac date null,
-direccion varchar(150) null,
-activo bool null,
-fechacrea date null,
-CONSTRAINT estudiantes_pk PRIMARY KEY (idestudiante)
+	idestudiante int auto_increment not null,
+	nomestudiante varchar(100) null,
+	apeestudiante varchar(100) null,
+	email varchar(200) null,
+	telefono varchar(30) null,
+	fechanac date null,
+	direccion varchar(150) null,
+	activo bool null,
+	fechacrea date null,
+	CONSTRAINT estudiantes_pk PRIMARY KEY (idestudiante)
 );
 
 INSERT INTO bd_sistemamatriculas.docente (nomdocente,email,activo,fechacrea) VALUES
@@ -74,7 +83,7 @@ INSERT INTO bd_sistemamatriculas.docente (nomdocente,email,activo,fechacrea) VAL
 	 ('Mario Asias','EduAsias@example.com',0,'2023-11-19'),
 	 ('Flor Espinoza','FlorG@example.com',0,'2023-11-19'),
 	 ('Lucia Gomez','LuciGom@cibertec.edu.pe',0,'2023-11-20');
-	
+
 INSERT INTO bd_sistemamatriculas.curso (nomcurso,nivel,iddocente) VALUES
 	 ('Matemáticas','6to Primaria',6),
 	 ('Historia Avanzada','2do Secundaria',2),
@@ -85,7 +94,7 @@ INSERT INTO bd_sistemamatriculas.curso (nomcurso,nivel,iddocente) VALUES
 	 ('Historia','5to Primaria',6),
 	 ('Comunicación I','4to Primaria',2),
 	 ('Trigonometría','3ro Secundaria',3);
-	
+
 INSERT INTO bd_sistemamatriculas.estudiante (nomestudiante,apeestudiante,email,telefono,fechanac,direccion,activo,fechacrea) VALUES
 	 ('Eduardo','Pérez','AlbPer@cibertec.edu.pe','963-158-487','2001-02-18','Jr. Los Rosales 898 - Callao',1,'2023-11-19'),
 	 ('Juan','Gutierrez','JGutierr@cibertec.edu.pe','988-144-178','2000-06-25','Av. Libares 121, Callao',1,'2023-11-19'),
@@ -103,7 +112,18 @@ INSERT INTO bd_sistemamatriculas.estudiante (nomestudiante,apeestudiante,email,t
 	 ('Paula','Santos','PauSantos@cibertec.edu.pe','987-981-165','2001-05-10','Av. Suarez 123',1,'2023-11-20'),
 	 ('Eric','Bautista','ErcBautista@cibertec.edu.pe','951-988-128','2002-09-10','Jr. Tupac Amaru 10',1,'2023-11-20');
 
-
+insert into bd_sistemamatriculas.grado (nomgrado) values
+	('Primero de primaria'),
+	('Segundo de primaria'),
+	('Tercero de primaria'),
+	('Cuarto de primaria'),
+	('Quinto de primaria'),
+	('Sexto de primaria'),
+	('Primero de secundaria'),
+	('Segundo de secundaria'),
+	('Tercero de secundaria'),
+	('Cuarto de secundaria'),
+	('Quinto de secundaria');
 
 
 

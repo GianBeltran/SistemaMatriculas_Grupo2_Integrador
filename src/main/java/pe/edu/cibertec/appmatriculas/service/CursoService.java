@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.cibertec.appmatriculas.model.bd.Curso;
 import pe.edu.cibertec.appmatriculas.model.bd.Docente;
+import pe.edu.cibertec.appmatriculas.model.bd.Grado;
 import pe.edu.cibertec.appmatriculas.model.request.CursoRequest;
 import pe.edu.cibertec.appmatriculas.model.response.ResultadoResponse;
 import pe.edu.cibertec.appmatriculas.repository.CursoRepository;
@@ -22,13 +23,14 @@ public class CursoService {
         return cursoRepository.findAll();
     }
 
-    public List<Curso> findByNivel(String nivel) {
-        return cursoRepository.findByNivel(nivel);
-    }
-
     public List<Curso> findByNomcurso(String nomcurso) {
         return cursoRepository.findByNomcurso(nomcurso);
     }
+
+    public List<Curso> listarCursosPorGrado(Integer idgrado){
+        return cursoRepository.findByGradoIdgrado(idgrado);
+    }
+
 
     public ResultadoResponse guardarCurso(CursoRequest curso){
         String mensaje = "Curso registrado correctamente";
@@ -39,7 +41,10 @@ public class CursoService {
                 objCurso.setIdcurso(curso.getIdcurso());
             }
             objCurso.setNomcurso(curso.getNomcurso());
-            objCurso.setNivel(curso.getNivel());
+
+            Grado grado = new Grado();
+            grado.setIdgrado(curso.getIdgrado());
+            objCurso.setGrado(grado);
 
             Docente docente = new Docente();
             docente.setIddocente(curso.getIddocente());

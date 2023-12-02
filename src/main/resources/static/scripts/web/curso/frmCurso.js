@@ -1,19 +1,23 @@
 $(document).on("click", "#btnagregar", function(){
     $("#txtNombreCurso").val("");
-    $("#txtNivelCurso").val("");
     $("#hddcodcurso").val("0");
     $("#cbodocentes").empty();
+    $("#cbogrados").empty();
 
     listarCboDocentes();
+    listarCboGrados();
     $("#modalNuevo").modal("show");
 });
 
 $(document).on("click", ".btnactualizar", function(){
     $("#txtNombreCurso").val($(this).attr("data-nomcurso"));
-    $("#txtNivelCurso").val($(this).attr("data-nivel"));
     $("#hddcodcurso").val($(this).attr("data-idcurso"));
+    $("#cbogrados").empty();
+    listarCboGrados($(this).attr("data-idgrado"));
     $("#cbodocentes").empty();
     listarCboDocentes($(this).attr("data-iddocente"));
+
+
     $("#modalNuevo").modal("show");
 });
 
@@ -25,7 +29,7 @@ $(document).on("click", "#btnguardar", function(){
         data: JSON.stringify({
             idcurso: $("#hddcodcurso").val(),
             nomcurso: $("#txtNombreCurso").val(),
-            nivel: $("#txtNivelCurso").val(),
+            idgrado: $("#cbogrados").val(),
             iddocente: $("#cbodocentes").val()
         }),
         success: function(resultado){
@@ -57,6 +61,24 @@ function listarCboDocentes(iddocente){
     });
 }
 
+function listarCboGrados(idgrado){
+    $.ajax({
+        type: "GET",
+        url: "/grado/listar",
+        dataType: "json",
+        success: function(resultado){
+            $.each(resultado, function(index, value){
+                $("#cbogrados").append(
+                    `<option value="${value.idgrado}">${value.nomgrado}</option>`
+                )
+            });
+            if(idgrado > 0){
+                $("#cbogrados").val(idgrado);
+            }
+        }
+    });
+}
+
 function listarCursos(){
     $.ajax({
         type: "GET",
@@ -68,13 +90,13 @@ function listarCursos(){
                 $("#tblcurso > tbody").append("<tr>"+
                     "<td>"+value.idcurso+"</td>"+
                     "<td>"+value.nomcurso+"</td>"+
-                    "<td>"+value.nivel+"</td>"+
+                    "<td>"+value.grado.nomgrado+"</td>"+
                     "<td>"+value.docente.nomdocente+"</td>"+
                     "<td>"+
                         "<button type='button' class='btn btn-info btnactualizar'"+
                                      "data-idcurso='"+value.idcurso+"'"+
                                      "data-nomcurso='"+value.nomcurso+"'"+
-                                     "data-nivel='"+value.nivel+"'"+
+                                     "data-idgrado='"+value.grado.idgrado+"'"+
                                      "data-iddocente='"+value.docente.iddocente+"'"+
                                      "><i class='fas fa-edit'></i></button>"+
                     "</td></tr>");

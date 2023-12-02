@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface CursoRepository extends JpaRepository<Curso, Integer> {
-    List<Curso> findByNivel(String nivel);
     List<Curso> findByNomcurso(String nomcurso);
+    List<Curso> findByGradoIdgrado(Integer idgrado);
+
+
 }

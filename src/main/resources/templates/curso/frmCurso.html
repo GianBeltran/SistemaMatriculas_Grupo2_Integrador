@@ -18,7 +18,7 @@
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">NOMBRE CURSO</th>
-                <th scope="col">NIVEL</th>
+                <th scope="col">GRADO</th>
                 <th scope="col">DOCENTE</th>
             </tr>
             </thead>
@@ -26,13 +26,13 @@
             <tr th:each="curso :${listacursos}">
                 <td th:text="${curso.idcurso}"></td>
                 <td th:text="${curso.nomcurso}"></td>
-                <td th:text="${curso.nivel}"></td>
+                <td th:text="${curso.grado.nomgrado}"></td>
                 <td th:text="${curso.docente.nomdocente}"></td>
                 <td>
                     <button type="button" class="btn btn-info btnactualizar"
                             th:data-idcurso="${curso.idcurso}"
                             th:data-nomcurso="${curso.nomcurso}"
-                            th:data-nivel="${curso.nivel}"
+                            th:data-idgrado="${curso.grado.idgrado}"
                             th:data-iddocente="${curso.docente.iddocente}">
                         <i class="fas fa-edit"></i></button>
                 </td>
@@ -55,9 +55,10 @@
                     <input type="text" class="form-control" id="txtNombreCurso">
                 </div>
                 <div class="mb-3">
-                    <label for="txtNivelCurso" class="form-label">NIVEL</label>
-                    <input type="text" class="form-control" id="txtNivelCurso">
+                    <label for="cbogrados" class="form-label">GRADO</label>
+                    <select id="cbogrados" class="form-control"></select>
                 </div>
+
                 <div class="mb-3">
                     <label for="cbodocentes" class="form-label">DOCENTES</label>
                     <select id="cbodocentes" class="form-control"></select>
