@@ -77,7 +77,7 @@ public class MatriculaService {
                 if (nuevoEstado == 2) { // 2 = Cancelado
                     matricula.setObservaciones(observaciones);
                 } else {
-                    matricula.setObservaciones(null); // Si no es Cancelado, limpiamos las observaciones
+                    matricula.setObservaciones("Proceso completado"); // Si no es Cancelado, limpiamos las observaciones
                 }
 
                 matriculaRepository.save(matricula);

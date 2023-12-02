@@ -359,6 +359,7 @@ function actualizarTablaMatriculas(matriculas) {
                     '<span> ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  </span>' +
                     '<strong>Estado:</strong> ' + obtenerEstadoTexto(detalles.matricula.estado) +
                     '<span> ‎ ‎ ‎ ‎ ‎ ‎ </span><br>' +
+                    '<strong>Observaciones:</strong> ' + detalles.matricula.observaciones +
                     '<hr>';
 
                 // Construir el HTML con los detalles del estudiante
