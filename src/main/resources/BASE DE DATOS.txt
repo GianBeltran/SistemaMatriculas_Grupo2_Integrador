@@ -66,6 +66,7 @@ CREATE TABLE matricula (
     FOREIGN KEY (idgrado) REFERENCES grado(idgrado)
 );
 
+
 create table estudiante(
 	idestudiante int auto_increment not null,
 	nomestudiante varchar(100) null,
