@@ -2,16 +2,16 @@ package pe.edu.cibertec.appmatriculas.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pe.edu.cibertec.appmatriculas.model.bd.Estudiante;
-import pe.edu.cibertec.appmatriculas.model.bd.Grado;
-import pe.edu.cibertec.appmatriculas.model.bd.Matricula;
+import pe.edu.cibertec.appmatriculas.model.bd.*;
 import pe.edu.cibertec.appmatriculas.model.request.MatriculaRequest;
 import pe.edu.cibertec.appmatriculas.model.response.ResultadoResponse;
+import pe.edu.cibertec.appmatriculas.repository.CursoRepository;
 import pe.edu.cibertec.appmatriculas.repository.MatriculaRepository;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +20,7 @@ import java.util.Optional;
 public class MatriculaService {
 
     private MatriculaRepository matriculaRepository;
+    private CursoRepository cursoRepository;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public List<Matricula> listarMatriculas(){
@@ -92,5 +93,17 @@ public class MatriculaService {
                 .mensaje(mensaje)
                 .respuesta(respuesta)
                 .build();
+    }
+
+    public DetallesMatricula obtenerDetallesMatricula(Integer idMatricula) {
+        Matricula matricula = matriculaRepository.findById(idMatricula).orElse(null);
+
+        if (matricula != null) {
+            Estudiante estudiante = matricula.getEstudiante();
+            Grado grado = matricula.getGrado();
+            List<Curso> cursos = (grado != null) ? cursoRepository.findByGradoIdgrado(grado.getIdgrado()) : new ArrayList<>();
+            return new DetallesMatricula(matricula, estudiante, grado, cursos);
+        }
+        return null;
     }
 }

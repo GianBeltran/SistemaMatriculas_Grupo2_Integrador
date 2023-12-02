@@ -23,6 +23,15 @@ $(document).on("click", ".btnactualizar", function(){
     $("#modalNuevo").modal("show");
 });
 
+// Asociar la función al clic del botón de ver detalles (también para elementos futuros)
+$(document).on('click', '.btnVerDetalles', function () {
+    var idMatricula = $(this).attr('data-idmatricula');
+    var idEstudiante = $(this).attr('data-idestudiante');
+    var idGrado = $(this).attr('data-idgrado');
+    mostrarDetallesMatricula(idMatricula, idEstudiante, idGrado);
+});
+
+
 $(document).on("click", "#btnguardar", function(){
     $.ajax({
         type: "POST",
@@ -68,6 +77,11 @@ function listarMatriculas(){
                     "<td>"+fechaMatriculaFormateada+"</td>"+
                     "<td>"+estadoText+"</td>"+
                     "<td>"+
+                        "<button type='button' class='btn btn-success btnVerDetalles'"+
+                                      "data-idmatricula='"+value.idmatricula+"'"+
+                                      "data-idestudiante='"+value.estudiante.idestudiante+"'"+
+                                      "data-idgrado='"+value.grado.idgrado+"'"+
+                                      "><i class='fas fa-eye'></i></button> " +
                         "<button type='button' class='btn btn-info btnactualizar'"+
                                      "data-idmatricula='"+value.idmatricula+"'"+
                                      "data-idestudiante='"+value.estudiante.idestudiante+"'"+
@@ -305,6 +319,11 @@ function actualizarTablaMatriculas(matriculas) {
                 "<td>"+fechaMatriculaFormateada+"</td>"+
                 "<td>"+estadoText+"</td>"+
                 "<td>"+
+                    "<button type='button' class='btn btn-success btnVerDetalles'"+
+                        "data-idmatricula='"+value.idmatricula+"'"+
+                        "data-idestudiante='"+value.estudiante.idestudiante+"'"+
+                        "data-idgrado='"+value.grado.idgrado+"'"+
+                        "><i class='fas fa-eye'></i></button> " +
                     "<button type='button' class='btn btn-info btnactualizar'"+
                         "data-idmatricula='"+value.idmatricula+"'"+
                         "data-idestudiante='"+value.estudiante.idestudiante+"'"+
@@ -319,6 +338,84 @@ function actualizarTablaMatriculas(matriculas) {
                 "</td></tr>");
         });
     }
+
+// Función para cargar y mostrar los detalles de la matrícula, estudiante y cursos por grado
+    function mostrarDetallesMatricula(idMatricula, idEstudiante, idGrado) {
+        // Realizar la solicitud AJAX al servidor para obtener los detalles
+        $.ajax({
+            url: '/matricula/detalles',
+            method: 'GET',
+            data: {
+                idMatricula: idMatricula
+            },
+            success: function (detalles) {
+                // Construir el HTML con los detalles de la matrícula
+                var detallesMatriculaHTML =
+                    '<strong>DATOS DE LA MATRÍCULA:</strong><br>' +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ </span><br>' +
+                    '<strong>Grado:</strong> ' + detalles.grado.nomgrado +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  </span>' +
+                    '<strong>Fecha de matrícula:</strong> ' + moment(detalles.matricula.fechamat).format("DD-MM-YYYY") +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  </span>' +
+                    '<strong>Estado:</strong> ' + obtenerEstadoTexto(detalles.matricula.estado) +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ </span><br>' +
+                    '<hr>';
+
+                // Construir el HTML con los detalles del estudiante
+                var detallesEstudianteHTML =
+                    '<strong>DATOS DEL ESTUDIANTE:</strong><br>' +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ </span><br>' +
+                    '<strong>Estudiante:</strong> ' + detalles.estudiante.nomestudiante + ' ' + detalles.estudiante.apeestudiante +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ </span>' +
+                    '<strong>Fecha de nacimiento:</strong> ' + moment(detalles.matricula.fechanac).format("DD-MM-YYYY") +
+                    '<span> ‎ ‎ ‎ ‎ ‎ </span>' +
+                    '<strong>Dirección:</strong> ' + detalles.estudiante.direccion +
+
+                    '<br><strong>Teléfono:</strong> ' + detalles.estudiante.telefono +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  </span>' +
+                    '<strong>Email:</strong> ' + detalles.estudiante.email +
+                    '<span> ‎ ‎ ‎ ‎ ‎ ‎ </span><br>' +
+                    '<hr>';
+
+                // Construir el HTML con la lista de cursos
+                var cursosHTML = '<strong>CURSOS:</strong>';
+                detalles.cursos.forEach(function (curso) {
+                    cursosHTML += '<div> - ‎ ‎' + curso.nomcurso + '</div>';
+                });
+
+                // Mostrar los detalles en el modal
+                $('#detallesMatricula').html(detallesMatriculaHTML);
+                $('#detallesEstudiante').html(detallesEstudianteHTML);
+                $('#cursosGrado').html(cursosHTML);
+
+                // Mostrar el modal
+                $('#modalDetalle').modal('show');
+            },
+            error: function () {
+                // Manejar errores si es necesario
+                alert('Error al obtener detalles de la matrícula.');
+            }
+        });
+    }
+
+    // Función para obtener el texto del estado según el código
+    function obtenerEstadoTexto(codigoEstado) {
+        switch (codigoEstado) {
+            case 0: return 'Pendiente';
+            case 1: return 'Confirmado';
+            case 2: return 'Cancelado';
+            default: return 'Desconocido';
+        }
+    }
+
+    // Asociar la función al clic del botón de ver detalles
+    $('.btnVerDetalles').click(function () {
+        var idMatricula = $(this).attr('data-idmatricula');
+        var idEstudiante = $(this).attr('data-idestudiante');
+        var idGrado = $(this).attr('data-idgrado');
+        mostrarDetallesMatricula(idMatricula, idEstudiante, idGrado);
+    });
+
 
 });
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.cibertec.appmatriculas.model.bd.Curso;
+import pe.edu.cibertec.appmatriculas.model.bd.DetallesMatricula;
 import pe.edu.cibertec.appmatriculas.model.bd.Estudiante;
 import pe.edu.cibertec.appmatriculas.model.bd.Matricula;
 import pe.edu.cibertec.appmatriculas.model.request.CursoRequest;
@@ -57,5 +58,11 @@ public class MatriculaController {
     @GetMapping("/buscarPorEstado")
     public List<Matricula> buscarMatriculaPorEstado(@RequestParam Integer estado) {
         return matriculaService.listarMatriculasPorEstado(estado);
+    }
+    ////////////////
+    @ResponseBody
+    @GetMapping("/detalles")
+    public DetallesMatricula obtenerDetallesMatricula(@RequestParam Integer idMatricula) {
+        return matriculaService.obtenerDetallesMatricula(idMatricula);
     }
 }

@@ -29,6 +29,11 @@ public class CursoController {
     public List<Curso> listarCursos(){
         return cursoService.listarCursos();
     }
+    @ResponseBody
+    @GetMapping("/listarPorGrado")
+    public List<Curso> listarCursosPorGrado(Integer idgrado){
+        return cursoService.listarCursosPorGrado(idgrado);
+    }
 
     @ResponseBody
     @PostMapping("/guardar")

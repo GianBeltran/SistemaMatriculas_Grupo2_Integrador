@@ -37,6 +37,10 @@ public class EstudianteService {
     public List<Estudiante> buscarEstudiantePorApellido(String apeestudiante){
         return estudianteRepository.findByApeestudiante(apeestudiante);
     }
+
+    public Estudiante buscarEstudiantePorId(Integer idestudiante){
+        return estudianteRepository.findByIdestudiante(idestudiante);
+    }
     ////////
     public ResultadoResponse guardarEstudiante(EstudianteRequest estudiante){
         String mensaje = "SISTEMA: Estudiante registrado correctamente";

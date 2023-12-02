@@ -11,4 +11,5 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Integer>
     List<Estudiante> findByNomestudiante(String nomestudiante);
     List<Estudiante> findByApeestudiante(String apeestudiante);
     List<Estudiante> findByActivoTrue();
+    Estudiante findByIdestudiante(Integer idestudiante);
 }

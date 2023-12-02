@@ -50,6 +50,12 @@ public class EstudianteController {
 
     ////////////////
     @ResponseBody
+    @GetMapping("/buscar")
+    public Estudiante buscarEstudiantePorId(@RequestParam Integer idestudiante){
+        return estudianteService.buscarEstudiantePorId(idestudiante);
+    }
+
+    @ResponseBody
     @GetMapping("/buscarPornombre")
     public List<Estudiante> buscarEstudiantesPorNombre(@RequestParam String nomestudiante){
         return estudianteService.buscarEstudiantesPorNombre(nomestudiante);
