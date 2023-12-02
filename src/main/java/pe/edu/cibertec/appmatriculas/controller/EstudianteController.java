@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.cibertec.appmatriculas.model.bd.Docente;
 import pe.edu.cibertec.appmatriculas.model.bd.Estudiante;
 import pe.edu.cibertec.appmatriculas.model.request.EstudianteRequest;
 import pe.edu.cibertec.appmatriculas.model.response.ResultadoResponse;
@@ -28,6 +29,11 @@ public class EstudianteController {
     @GetMapping("/listar")
     public List<Estudiante> listarEstudiantes(){
         return estudianteService.listarEstudiantes();
+    }
+    @ResponseBody
+    @GetMapping("/listarActivos")
+    public List<Estudiante> listarEstudiantesActivos(){
+        return estudianteService.listarEstudiantesActivos();
     }
 
     @ResponseBody

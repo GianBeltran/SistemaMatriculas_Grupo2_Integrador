@@ -1,56 +1,42 @@
 $(document).ready(function() {
 
 $(document).on("click", "#btnagregar", function(){
-    $("#txtNombreEstudiante").val("");
-    $("#txtApellidoEstudiante").val("");
-    $("#txtEmailEstudiante").val("");
-    $("#txtTelefonoEstudiante").val("");
-    $("#txtFechaNacEstudiante").val("");
-    $("#txtDireccionEstudiante").val("");
+    $("#cboestudiantes").empty();
+    $("#cbogrados").empty();
+    $("#hddcodmatricula").val("0");
 
-    $("#hddcodestudiante").val("0");
+    listarCboEstudiantes();
+    listarCboGrados();
 
     $("#modalNuevo").modal("show");
 });
 
 $(document).on("click", ".btnactualizar", function(){
-    var fechaNac = $(this).attr("data-fechanac");
-    var fechaFormateada = moment(fechaNac).format("DD-MM-YYYY");
+    $("#cboestudiantes").empty();
+    listarCboEstudiantes($(this).attr("data-idestudiante"));
 
-    $("#txtNombreEstudiante").val($(this).attr("data-nomestudiante"));
-    $("#txtApellidoEstudiante").val($(this).attr("data-apeestudiante"));
-    $("#txtEmailEstudiante").val($(this).attr("data-email"));
-    $("#txtTelefonoEstudiante").val($(this).attr("data-telefono"));
-    $("#txtFechaNacEstudiante").val(fechaFormateada);
-    $("#txtDireccionEstudiante").val($(this).attr("data-direccion"));
+    $("#cbogrados").empty();
+    listarCboGrados($(this).attr("data-idgrado"));
 
-    $("#hddcodestudiante").val($(this).attr("data-idestudiante"));
+    $("#hddcodmatricula").val($(this).attr("data-idmatricula"));
 
     $("#modalNuevo").modal("show");
 });
 
 $(document).on("click", "#btnguardar", function(){
-    if (!validarCampos()) {
-        return; // Detener el proceso si hay errores de validación
-    }
-    var fechaNacimiento = moment($("#txtFechaNacEstudiante").val(), "DD-MM-YYYY").toDate();
-
     $.ajax({
         type: "POST",
-        url: "/estudiante/guardar",
+        url: "/matricula/guardar",
         contentType: "application/json",
         data: JSON.stringify({
-            idestudiante: $("#hddcodestudiante").val(),
-            nomestudiante: $("#txtNombreEstudiante").val(),
-            apeestudiante: $("#txtApellidoEstudiante").val(),
-            email: $("#txtEmailEstudiante").val(),
-            telefono: $("#txtTelefonoEstudiante").val(),
-            fechanac: fechaNacimiento,
-            direccion: $("#txtDireccionEstudiante").val()
+            idmatricula: $("#hddcodmatricula").val(),
+            idestudiante: $("#cboestudiantes").val(),
+            idgrado: $("#cbogrados").val()
         }),
         success: function(resultado){
             if(resultado.respuesta){
-                listarEstudiantes();
+                listarMatriculas();
+                location.reload();
             }
             alert(resultado.mensaje);
         }
@@ -58,142 +44,33 @@ $(document).on("click", "#btnguardar", function(){
     $("#modalNuevo").modal("hide");
 });
 
-
-function validarCampos() {
-    // Validar campos aquí y mostrar mensajes de error si es necesario
-    var nombre = $("#txtNombreEstudiante").val();
-    var apellido = $("#txtApellidoEstudiante").val();
-    var email = $("#txtEmailEstudiante").val();
-    var telefono = $("#txtTelefonoEstudiante").val();
-    var fechaNacimiento = $("#txtFechaNacEstudiante").val();
-    var direccion = $("#txtDireccionEstudiante").val();
-
-    // Verificar campos vacíos
-    if (nombre.trim() === '' || apellido.trim() === '' || email.trim() === '' ||
-        telefono.trim() === '' || fechaNacimiento.trim() === '' || direccion.trim() === '') {
-        alert("Por favor, complete todos los campos.");
-        return false;
-    }
-
-    // Validar email
-    if (!validarEmail(email)) {
-        alert("Por favor, ingrese un email válido con dominio @cibertec.edu.pe");
-        return false;
-    }
-    // Validar telefono
-    if (!validarTelefono(telefono)) {
-        alert("Por favor, ingrese un número de teléfono válido");
-        return false;
-    }
-    // Validar fecha de nacimiento
-    if (!validarFechaNacimiento(fechaNacimiento)) {
-        alert("Por favor, ingrese una fecha de nacimiento válida");
-        return false;
-    }
-    return true;
-}
-
-function validarEmail(email) {
-    // Validar el formato del correo electrónico con el dominio específico
-    var emailRegex = /^[a-zA-Z0-9._-]+@cibertec\.edu\.pe$/;
-    return emailRegex.test(email);
-}
-function validarTelefono(telefono) {
-    // Validar el formato del número de teléfono
-    var telefonoRegex = /^\d{3}-\d{3}-\d{3}$/;
-    return telefonoRegex.test(telefono);
-}
-function validarFechaNacimiento(fechaNacimiento) {
-    // Validar el formato de la fecha de nacimiento
-    var fechaNacimientoRegex = /^\d{2}-\d{2}-\d{4}$/;
-    return fechaNacimientoRegex.test(fechaNacimiento);
-}
-
-
-
-
-$(document).on("click", ".btnCambiarEstado", function() {
-    var idEstudiante = $(this).attr("data-idestudiante");
-    var nomEstudiante = $(this).attr("data-nomestudiante");
-    var apeEstudiante = $(this).attr("data-apeestudiante");
-
-    // Mostrar el modal con el mensaje y opciones
-    $("#mensajeModal").text("¿Quieres cambiar el estado de " + nomEstudiante + " " + apeEstudiante + " a Inactivo?");
-    $("#modalCambiarEstado").modal("show");
-
-    // Capturar el clic en el botón "Sí" del modal
-    $("#btnConfirmarCambiarEstado").on("click", function() {
-        // Realizar la llamada AJAX para cambiar el estado
-        $.ajax({
-            type: "POST",
-            url: "/estudiante/cambiarEstado",
-            data: {
-                idestudiante: idEstudiante,
-                estado: "Inactivo"
-            },
-            success: function(resultado) {
-                if (resultado.respuesta) {
-                    listarEstudiantes();
-                }
-                alert(resultado.mensaje);
-            }
-        });
-
-        // Ocultar el modal después de hacer la llamada
-        $("#modalCambiarEstado").modal("hide");
-
-        // Eliminar el evento clic del botón "Sí" para evitar duplicados
-        $("#btnConfirmarCambiarEstado").off("click");
-    });
-
-    // Capturar el clic en el botón "No" del modal
-    $("#modalCambiarEstado").on("hide.bs.modal", function() {
-        // Eliminar el evento clic del botón "Sí" para evitar duplicados
-        $("#btnConfirmarCambiarEstado").off("click");
-    });
-});
-
-
-function listarEstudiantes(){
+function listarMatriculas(){
     $.ajax({
         type: "GET",
-        url: "/estudiante/listar",
+        url: "/matricula/listar",
         dataType: "json",
         success: function(resultado){
-            $("#tblestudiante > tbody").html("");
+            $("#tblmatricula > tbody").html("");
             $.each(resultado, function(index, value){
-            var fechaNacimientoFormateada = moment(value.fechanac).format("DD-MM-YYYY");
-            var fechaCreacionFormateada = moment(value.fechacrea).format("DD-MM-YYYY");
+            var fechaMatriculaFormateada = moment(value.fechamat).format("DD-MM-YYYY");
 
-                $("#tblestudiante > tbody").append("<tr>"+
-                    "<td>"+value.nomestudiante+"</td>"+
-                    "<td>"+value.apeestudiante+"</td>"+
-                    "<td>"+value.email+"</td>"+
-                    "<td>"+fechaNacimientoFormateada+"</td>"+
+                $("#tblmatricula > tbody").append("<tr>"+
+                    "<td>"+value.idmatricula+"</td>"+
+                    "<td>"+value.estudiante.nomestudiante+"</td>"+
+                    "<td>"+value.grado.nomgrado+"</td>"+
+                    "<td>"+fechaMatriculaFormateada+"</td>"+
+                    "<td>"+value.estado+"</td>"+
                     "<td>"+
-                    "<button type='button' class='btn btn-success btnDetalles'"+
-                                    "data-idestudiante='"+value.idestudiante+"'"+
-                                    "data-nomestudiante='"+value.nomestudiante+"'"+
-                                    "data-apeestudiante='"+value.apeestudiante+"'"+
-                                    "data-email='"+value.email+"'"+
-                                    "data-telefono='"+value.telefono+"'"+
-                                    "data-fechanac='"+value.fechanac+"'"+
-                                    "data-direccion='"+value.direccion+"'"+
-                                    "data-activo='"+value.activo+"'"+
-                                    "><i class='fas fa-info-circle'></i></button> " +
                         "<button type='button' class='btn btn-info btnactualizar'"+
-                                     "data-idestudiante='"+value.idestudiante+"'"+
-                                     "data-nomestudiante='"+value.nomestudiante+"'"+
-                                     "data-apeestudiante='"+value.apeestudiante+"'"+
-                                     "data-email='"+value.email+"'"+
-                                     "data-telefono='"+value.telefono+"'"+
-                                     "data-fechanac='"+value.fechanac+"'"+
-                                     "data-direccion='"+value.direccion+"'"+
+                                     "data-idmatricula='"+value.idmatricula+"'"+
+                                     "data-idestudiante='"+value.estudiante.idestudiante+"'"+
+                                     "data-idgrado='"+value.grado.idgrado+"'"+
                                      "><i class='fas fa-edit'></i></button> " +
                          "<button type='button' class='btn btn-danger btnCambiarEstado'"+
-                                                     "data-idestudiante='"+value.idestudiante+"'"+
-                                                     "data-nomestudiante='"+value.nomestudiante+"'"+
-                                                     "data-apeestudiante='"+value.apeestudiante+"'"+
+                                                     "data-idmatricula='"+value.idmatricula+"'"+
+                                                     "data-nomestudiante='"+value.estudiante.nomestudiante+"'"+
+                                                     "data-apeestudiante='"+value.estudiante.apeestudiante+"'"+
+                                                     "data-nomgrado='"+value.grado.nomgrado+"'"+
                                                  "><i class='fas fa-trash'></i></button>"+
 
                     "</td></tr>");
@@ -219,6 +96,90 @@ function listarCboGrados(idgrado){
         }
     });
 }
+function listarCboEstudiantes(idestudiante){
+    $.ajax({
+        type: "GET",
+        url: "/estudiante/listar",
+        dataType: "json",
+        success: function(resultado){
+            $.each(resultado, function(index, value){
+                $("#cboestudiantes").append(
+                    `<option value="${value.idestudiante}">${value.nomestudiante} ${value.apeestudiante}</option>`
+                )
+            });
+            if(idestudiante > 0){
+                $("#cboestudiantes").val(idestudiante);
+            }
+        }
+    });
+}
+
+$(document).on("click", ".btnCambiarEstado", function () {
+    var idMatricula = $(this).attr("data-idmatricula");
+    var nomEstudiante = $(this).attr("data-nomestudiante");
+    var apeEstudiante = $(this).attr("data-apeestudiante");
+
+    // Mostrar el modal con el mensaje y opciones
+    $("#mensajeModal").text("¿A qué estado desea cambiar la matrícula de " + nomEstudiante + " " + apeEstudiante + "?");
+    $("#estadoSelect").val("Completa");
+    $("#observacionesDiv").hide();
+    $("#observaciones").prop("disabled", true);
+    $("#modalCambiarEstado").modal("show");
+
+    // Capturar el clic en el botón "Sí" del modal
+    $("#btnConfirmarCambiarEstado").on("click", function () {
+        var nuevoEstado = $("#estadoSelect").val();
+        var observaciones = $("#observaciones").val();
+
+        // Realizar la llamada AJAX para cambiar el estado
+        $.ajax({
+            type: "POST",
+            url: "/matricula/cambiarEstado",
+            data: {
+                idmatricula: idMatricula,
+                estado: nuevoEstado,
+                observaciones: observaciones
+            },
+            success: function (resultado) {
+                if (resultado.respuesta) {
+                    listarMatriculas();
+                }
+                alert(resultado.mensaje);
+            }
+        });
+
+        // Ocultar el modal después de hacer la llamada
+        $("#modalCambiarEstado").modal("hide");
+
+        // Limpiar el campo de observaciones y eliminar el evento clic del botón "Sí"
+        $("#observaciones").val("");
+        $("#btnConfirmarCambiarEstado").off("click");
+    });
+
+    // Capturar el cambio en el combobox para habilitar/deshabilitar la caja de observaciones
+    $("#estadoSelect").on("change", function () {
+        var seleccionado = $(this).val();
+        if (seleccionado === "Cancelada") {
+            $("#observacionesDiv").show();
+            $("#observaciones").prop("disabled", false);
+        } else {
+            $("#observacionesDiv").hide();
+            $("#observaciones").prop("disabled", true);
+        }
+    });
+
+    // Capturar el clic en el botón "No" del modal
+    $("#modalCambiarEstado").on("hide.bs.modal", function () {
+        // Limpiar el campo de observaciones y eliminar el evento clic del botón "Sí"
+        $("#observaciones").val("");
+        $("#btnConfirmarCambiarEstado").off("click");
+        // Eliminar el evento de cambio en el combobox
+        $("#estadoSelect").off("change");
+    });
+
+});
+
+
 
 ///////////////////////////////
 // Evento de clic para buscar por nombre

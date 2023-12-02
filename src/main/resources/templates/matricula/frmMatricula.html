@@ -33,10 +33,15 @@
             <tbody>
             <tr th:each="matricula :${listamatriculas}">
                 <td th:text="${matricula.idmatricula}"></td>
-                <td th:text="${matricula.estudiante.nomestudiante}"></td>
+                <td th:text="${matricula.estudiante.nomestudiante + ' ' + matricula.estudiante.apeestudiante}"></td>
                 <td th:text="${matricula.grado.nomgrado}"></td>
                 <td th:text="${#dates.format(matricula.fechamat, 'dd-MM-yyyy')}"></td>
-                <td th:text="${matricula.estado}"></td>
+                <td>
+                    <span th:switch="${matricula.estado}">
+                        <span th:case="0">Pendiente</span>
+                        <span th:case="1">Confirmado</span>
+                        <span th:case="2">Cancelado</span>
+                    </span></td>
                 <td>
                     <button type="button" class="btn btn-info btnactualizar"
                             th:data-idmatricula="${matricula.idmatricula}"
@@ -139,7 +144,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="mensajeModal"></p>
+                <p id="mensajeModal">¿A qué estado desea cambiar la matrícula?</p>
+                <div class="mb-3">
+                    <label for="estadoSelect" class="form-label">Nuevo Estado:</label>
+                    <select id="estadoSelect" class="form-control">
+                        <option value="1">Confirmar</option>
+                        <option value="2">Cancelar</option>
+                    </select>
+                </div>
+                <div class="mb-3" id="observacionesDiv" style="display: none;">
+                    <label for="observaciones" class="form-label">Observaciones:</label>
+                    <textarea class="form-control" id="observaciones" rows="3" disabled></textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
@@ -148,5 +164,7 @@
         </div>
     </div>
 </div>
+
+
 </body>
 </html>
