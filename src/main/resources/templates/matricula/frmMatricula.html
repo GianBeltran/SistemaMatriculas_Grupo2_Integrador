@@ -1,10 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout::head}">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SISTEMA DE MATRICULAS</title>
 </head>
 <body>
-ESTE ES EL COSO DE MATRICULA
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
+<script th:src="@{/scripts/web/matricula/frmMatricula.js}" type="text/javascript"></script>
+
+<nav th:replace="~{layout::menu}"></nav>
+<div class="card ">
+    <div class="card-header text-bg-dark mb-3">GESTIÓN DE MATRÍCULAS</div>
+    <div class="card-body">
+        <button id="btnagregar" type="button" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Matrícula</button>
+
+        <div class="d-flex justify-content-end mb-3">
+            <button id="btnbuscarGrado" type="button" class="btn btn-primary me-2"><i class="fas fa-search"></i> Buscar matrícula por Grado</button>
+            <button id="btnbuscarEstado" type="button" class="btn btn-primary"><i class="fas fa-search"></i> Buscar matrícula por Estado</button>
+        </div>
+        <hr />
+        <div id="mensaje"></div>
+        <table id="tblmatricula" class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">ESTUDIANTE</th>
+                <th scope="col">GRADO</th>
+                <th scope="col">FECHA DE MATRÍCULA</th>
+                <th scope="col">ESTADO</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="matricula :${listamatriculas}">
+                <td th:text="${matricula.idmatricula}"></td>
+                <td th:text="${matricula.estudiante.nomestudiante}"></td>
+                <td th:text="${matricula.grado.nomgrado}"></td>
+                <td th:text="${#dates.format(matricula.fechamat, 'dd-MM-yyyy')}"></td>
+                <td th:text="${matricula.estado}"></td>
+                <td>
+                    <button type="button" class="btn btn-info btnactualizar"
+                            th:data-idmatricula="${matricula.idmatricula}"
+                            th:data-idestudiante="${matricula.estudiante.idestudiante}"
+                            th:data-idgrado="${matricula.grado.idgrado}">
+                        <i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger btnCambiarEstado"
+                            th:data-idmatricula="${matricula.idmatricula}"
+                            th:data-nomestudiante="${matricula.estudiante.nomestudiante}"
+                            th:data-apeestudiante="${matricula.estudiante.apeestudiante}"
+                            th:data-nomgrado="${matricula.grado.nomgrado}">
+                        <i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Registrar / Actualizar Matricula -->
+<div class="modal fade" id="modalNuevo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtNombreEstudiante" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="txtNombreEstudiante" maxlength="50">
+                </div>
+                <div class="mb-3">
+                    <label for="txtApellidoEstudiante" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="txtApellidoEstudiante" maxlength="50">
+                </div>
+                <div class="mb-3">
+                    <label for="txtEmailEstudiante" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="txtEmailEstudiante" placeholder="xxxxx@cibertec.edu.pe">
+                </div>
+                <div class="mb-3">
+                    <label for="txtTelefonoEstudiante" class="form-label">Telefono</label>
+                    <input type="text" class="form-control" id="txtTelefonoEstudiante" placeholder="xxx-xxx-xxx">
+                </div>
+                <div class="mb-3">
+                    <label for="txtFechaNacEstudiante" class="form-label">Fecha de nacimiento</label>
+                    <input type="text" class="form-control" id="txtFechaNacEstudiante" placeholder="Día-Mes-Año">
+                </div>
+                <div class="mb-3">
+                    <label for="txtDireccionEstudiante" class="form-label">Direccion</label>
+                    <input type="text" class="form-control" id="txtDireccionEstudiante">
+                </div>
+                <input type="hidden" id="hddcodestudiante" value="0">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnguardar" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals filtrar Estudiante -->
+<div class="modal fade" id="modalFiltrado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel3">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtBuscarNombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="txtBuscarNombre">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnfiltrarnombre" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modals filtrar Estudiante -->
+<div class="modal fade" id="modalFiltrado2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel4">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="txtBuscarApellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="txtBuscarApellido">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
+                <button type="button" id="btnfiltrarapellido" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals Detalles Estudiante -->
+<div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel5">ESTUDIANTE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Informe Completo -->
+<div class="modal fade" id="modalInformeCompleto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel6">INFORME COMPLETO DE ESTUDIANTES</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6" id="columna1"></div>
+                    <div class="col-md-6" id="columna2"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Cambiar Estado -->
+<div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">CAMBIAR ESTADO ESTUDIANTE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeModal"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarCambiarEstado">Sí</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

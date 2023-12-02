@@ -37,7 +37,9 @@ public class MatriculaService {
         Boolean respuesta = true;
         try {
             Matricula objMatricula = new Matricula();
-
+            if(matricula.getIdmatricula() > 0){
+                objMatricula.setIdmatricula(matricula.getIdmatricula());
+            }
             Estudiante estudiante = new Estudiante();
             estudiante.setIdestudiante(matricula.getIdestudiante());
             objMatricula.setEstudiante(estudiante);
