@@ -16,14 +16,12 @@ public class Matricula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idmatricula;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idestudiante")
-    @JsonBackReference
     private Estudiante estudiante;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idgrado")
-    @JsonBackReference
     private Grado grado;
 
     @Column(name = "fechamat")

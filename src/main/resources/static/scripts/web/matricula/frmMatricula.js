@@ -53,13 +53,20 @@ function listarMatriculas(){
             $("#tblmatricula > tbody").html("");
             $.each(resultado, function(index, value){
             var fechaMatriculaFormateada = moment(value.fechamat).format("DD-MM-YYYY");
+            var nombreCompletoEstudiante = value.estudiante.nomestudiante + ' ' + value.estudiante.apeestudiante;
+            var estadoText;
+                  switch (value.estado) {
+                       case 0:estadoText = "Pendiente"; break;
+                       case 1:estadoText = "Confirmado"; break;
+                       case 2:estadoText = "Cancelado"; break;
+                  }
 
                 $("#tblmatricula > tbody").append("<tr>"+
                     "<td>"+value.idmatricula+"</td>"+
-                    "<td>"+value.estudiante.nomestudiante+"</td>"+
+                    "<td>"+nombreCompletoEstudiante+"</td>"+
                     "<td>"+value.grado.nomgrado+"</td>"+
                     "<td>"+fechaMatriculaFormateada+"</td>"+
-                    "<td>"+value.estado+"</td>"+
+                    "<td>"+estadoText+"</td>"+
                     "<td>"+
                         "<button type='button' class='btn btn-info btnactualizar'"+
                                      "data-idmatricula='"+value.idmatricula+"'"+
@@ -181,117 +188,137 @@ $(document).on("click", ".btnCambiarEstado", function() {
     });
 });
 
+//////////////////////////////////////////////////////////////
 
-
-///////////////////////////////
-// Evento de clic para buscar por nombre
-$(document).on("click", "#btnbuscarNombre", function() {
-    $("#txtBuscarNombre").val("");
-    $("#modalFiltrado").modal("show");
-});
-$(document).on("click", "#btnfiltrarnombre", function() {
-    var nombre = $("#txtBuscarNombre").val();
-    // Realizar la llamada AJAX para buscar por nombre
-    realizarFiltro("nombre", nombre);
-    $("#modalFiltrado").modal("hide");
-});
-
-// Evento de clic para buscar por apellido
-$(document).on("click", "#btnbuscarApellido", function() {
-    $("#txtBuscarApellido").val("");
-    $("#modalFiltrado2").modal("show");
-});
-$(document).on("click", "#btnfiltrarapellido", function() {
-    var apellido = $("#txtBuscarApellido").val();
-    // Realizar la llamada AJAX para buscar por apellido
-    realizarFiltro("apellido", apellido);
-    $("#modalFiltrado2").modal("hide");
-});
-
-// Función para realizar el filtro
-function realizarFiltro(tipo, valor) {
-    // Determina la URL y el nombre del parámetro en función del tipo de búsqueda
-    var url;
-    var paramName;
-    if (tipo.toLowerCase() === "nombre") {
-        url = "/estudiante/buscarPornombre";
-        paramName = "nomestudiante";
-    } else if (tipo.toLowerCase() === "apellido") {
-        url = "/estudiante/buscarPorapellido";
-        paramName = "apeestudiante";
-    }
-
+function listarCboGradosFiltrado(idgrado){
     $.ajax({
         type: "GET",
-        url: url,
-        data: {
-            [paramName]: valor
-        },
+        url: "/grado/listar",
         dataType: "json",
-        success: function(resultado) {
-            if(resultado.length > 0) {
-                $("#tblestudiante > tbody").html("");
-                $.each(resultado, function(index, value) {
-                    var fechaNacimientoFormateada = moment(value.fechanac).format("DD-MM-YYYY");
-                    var fechaCreacionFormateada = moment(value.fechacrea).format("DD-MM-YYYY");
-
-                    $("#tblestudiante > tbody").append("<tr>"+
-                        "<td>"+value.nomestudiante+"</td>"+
-                        "<td>"+value.apeestudiante+"</td>"+
-                        "<td>"+value.email+"</td>"+
-                        "<td>"+fechaNacimientoFormateada+"</td>"+
-                        "<td>"+
-                        "<button type='button' class='btn btn-success btnDetalles'"+
-                                   "data-idestudiante='"+value.idestudiante+"'"+
-                                   "data-nomestudiante='"+value.nomestudiante+"'"+
-                                   "data-apeestudiante='"+value.apeestudiante+"'"+
-                                   "data-email='"+value.email+"'"+
-                                   "data-telefono='"+value.telefono+"'"+
-                                   "data-fechanac='"+value.fechanac+"'"+
-                                   "data-direccion='"+value.direccion+"'"+
-                                   "data-activo='"+value.activo+"'"+
-                                   "><i class='fas fa-info-circle'></i></button> "+
-                            "<button type='button' class='btn btn-info btnactualizar'"+
-                                "data-idestudiante='"+value.idestudiante+"'"+
-                                "data-nomestudiante='"+value.nomestudiante+"'"+
-                                "data-apeestudiante='"+value.apeestudiante+"'"+
-                                "data-email='"+value.email+"'"+
-                                "data-telefono='"+value.telefono+"'"+
-                                "data-fechanac='"+value.fechanac+"'"+
-                                "data-direccion='"+value.direccion+"'"+
-                                "><i class='fas fa-edit'></i></button> "+
-                            "<button type='button' class='btn btn-danger btnCambiarEstado'"+
-                                "data-idestudiante='"+value.idestudiante+"'"+
-                                "data-nomestudiante='"+value.nomestudiante+"'"+
-                                "data-apeestudiante='"+value.apeestudiante+"'"+
-                                "><i class='fas fa-trash'></i></button>"+
-                        "</td></tr>");
-                });
-            } else {
-                alert("No se encontraron estudiantes que contengan '" + valor + "'");
-                listarEstudiantes();
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error al realizar el filtro:", error);
-
-            // Verifica si el servidor proporcionó un mensaje de error
-            var errorMessage = "Mensaje de error no disponible.";
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMessage = xhr.responseJSON.message;
-            }
-
-            console.error("Detalles del error:", {
-                status: status,
-                errorMessage: errorMessage,
-                xhr: xhr
+        success: function(resultado){
+            $.each(resultado, function(index, value){
+                $("#cbofiltradogrados").append(
+                    `<option value="${value.idgrado}">${value.nomgrado}</option>`
+                )
             });
         }
     });
 }
+function listarCboEstados() {
+        var estados = [
+            { value: "0", label: "Pendiente" },
+            { value: "1", label: "Confirmado" },
+            { value: "2", label: "Cancelado" }
+        ];
+
+        $.each(estados, function(index, value) {
+            $("#cboestado").append(
+                `<option value="${value.value}">${value.label}</option>`
+            );
+        });
+    }
+
+// Evento de clic para buscar por grado
+    $(document).on("click", "#btnbuscarGrado", function() {
+        $("#cbofiltradogrados").empty();
+        listarCboGradosFiltrado();
+        $("#modalFiltrado").modal("show");
+    });
+    $(document).on("click", "#btnfiltrargrado", function() {
+        var idgrado = $("#cbofiltradogrados").val();
+        // Realizar la llamada AJAX para buscar por grado
+        realizarFiltro("grado", idgrado);
+        $("#modalFiltrado").modal("hide");
+    });
+
+    // Evento de clic para buscar por estado
+    $(document).on("click", "#btnbuscarEstado", function() {
+        $("#cboestado").empty();
+        // Llenar el cbo de estados (Pendiente, Confirmado, Cancelado)
+        listarCboEstados();
+        $("#modalFiltrado2").modal("show");
+    });
+    $(document).on("click", "#btnfiltrarestado", function() {
+        var estado = $("#cboestado").val();
+        // Realizar la llamada AJAX para buscar por estado
+        realizarFiltro("estado", estado);
+        $("#modalFiltrado2").modal("hide");
+    });
 
 
+// Función para realizar el filtro
+    function realizarFiltro(tipo, valor) {
+        var url;
+        var paramName;
 
+        if (tipo.toLowerCase() === "grado") {
+            url = "/matricula/buscarPorGrado";
+            paramName = "idgrado";
+        } else if (tipo.toLowerCase() === "estado") {
+            url = "/matricula/buscarPorEstado";
+            paramName = "estado";
+        }
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                [paramName]: valor
+            },
+            dataType: "json",
+            success: function(resultado) {
+            if(resultado.length > 0) {
+                actualizarTablaMatriculas(resultado);
+            } else {
+                alert("No se encontraron registros que cumplan con esos requisitos");
+                listarMatriculas();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error al realizar el filtro:", error);
+                alert("Error al realizar el filtro. Consulta la consola para obtener más detalles.");
+            }
+        });
+    }
+
+    // Función para actualizar la tabla con los resultados del filtro
+function actualizarTablaMatriculas(matriculas) {
+        // Limpiar la tabla
+        $("#tblmatricula > tbody").html("");
+
+        // Llenar la tabla con los resultados del filtro
+        $.each(matriculas, function(index, value) {
+            // Construir las filas de la tabla con los datos de las matrículas filtradas
+            var fechaMatriculaFormateada = moment(value.fechamat).format("DD-MM-YYYY");
+            var nombreCompletoEstudiante = value.estudiante.nomestudiante + ' ' + value.estudiante.apeestudiante;
+            var estadoText;
+                    switch (value.estado) {
+                        case 0:estadoText = "Pendiente"; break;
+                        case 1:estadoText = "Confirmado"; break;
+                        case 2:estadoText = "Cancelado"; break;
+                    }
+
+            $("#tblmatricula > tbody").append("<tr>"+
+                "<td>"+value.idmatricula+"</td>"+
+                "<td>"+nombreCompletoEstudiante+"</td>"+
+                "<td>"+value.grado.nomgrado+"</td>"+
+                "<td>"+fechaMatriculaFormateada+"</td>"+
+                "<td>"+estadoText+"</td>"+
+                "<td>"+
+                    "<button type='button' class='btn btn-info btnactualizar'"+
+                        "data-idmatricula='"+value.idmatricula+"'"+
+                        "data-idestudiante='"+value.estudiante.idestudiante+"'"+
+                        "data-idgrado='"+value.grado.idgrado+"'"+
+                    "><i class='fas fa-edit'></i></button> " +
+                    "<button type='button' class='btn btn-danger btnCambiarEstado'"+
+                        "data-idmatricula='"+value.idmatricula+"'"+
+                        "data-nomestudiante='"+value.estudiante.nomestudiante+"'"+
+                        "data-apeestudiante='"+value.estudiante.apeestudiante+"'"+
+                        "data-nomgrado='"+value.grado.nomgrado+"'"+
+                    "><i class='fas fa-trash'></i></button>"+
+                "</td></tr>");
+        });
+    }
 
 });
 
