@@ -114,20 +114,32 @@ function listarCboEstudiantes(idestudiante){
     });
 }
 
-$(document).on("click", ".btnCambiarEstado", function () {
+$(document).on("click", ".btnCambiarEstado", function() {
     var idMatricula = $(this).attr("data-idmatricula");
     var nomEstudiante = $(this).attr("data-nomestudiante");
     var apeEstudiante = $(this).attr("data-apeestudiante");
 
     // Mostrar el modal con el mensaje y opciones
     $("#mensajeModal").text("¿A qué estado desea cambiar la matrícula de " + nomEstudiante + " " + apeEstudiante + "?");
-    $("#estadoSelect").val("Completa");
+    $("#estadoSelect").val("1"); // Por defecto, Confirmar
     $("#observacionesDiv").hide();
     $("#observaciones").prop("disabled", true);
     $("#modalCambiarEstado").modal("show");
 
+    // Capturar el cambio en el combobox para habilitar/deshabilitar la caja de observaciones
+    $("#estadoSelect").on("change", function() {
+        var seleccionado = $(this).val();
+        if (seleccionado === "2") { // 2 = Cancelar
+            $("#observacionesDiv").show();
+            $("#observaciones").prop("disabled", false);
+        } else {
+            $("#observacionesDiv").hide();
+            $("#observaciones").prop("disabled", true);
+        }
+    });
+
     // Capturar el clic en el botón "Sí" del modal
-    $("#btnConfirmarCambiarEstado").on("click", function () {
+    $("#btnConfirmarCambiarEstado").on("click", function() {
         var nuevoEstado = $("#estadoSelect").val();
         var observaciones = $("#observaciones").val();
 
@@ -137,12 +149,13 @@ $(document).on("click", ".btnCambiarEstado", function () {
             url: "/matricula/cambiarEstado",
             data: {
                 idmatricula: idMatricula,
-                estado: nuevoEstado,
+                nuevoEstado: nuevoEstado,
                 observaciones: observaciones
             },
-            success: function (resultado) {
+            success: function(resultado) {
                 if (resultado.respuesta) {
                     listarMatriculas();
+                    location.reload();
                 }
                 alert(resultado.mensaje);
             }
@@ -154,29 +167,18 @@ $(document).on("click", ".btnCambiarEstado", function () {
         // Limpiar el campo de observaciones y eliminar el evento clic del botón "Sí"
         $("#observaciones").val("");
         $("#btnConfirmarCambiarEstado").off("click");
-    });
-
-    // Capturar el cambio en el combobox para habilitar/deshabilitar la caja de observaciones
-    $("#estadoSelect").on("change", function () {
-        var seleccionado = $(this).val();
-        if (seleccionado === "Cancelada") {
-            $("#observacionesDiv").show();
-            $("#observaciones").prop("disabled", false);
-        } else {
-            $("#observacionesDiv").hide();
-            $("#observaciones").prop("disabled", true);
-        }
+        // Eliminar el evento de cambio en el combobox
+        $("#estadoSelect").off("change");
     });
 
     // Capturar el clic en el botón "No" del modal
-    $("#modalCambiarEstado").on("hide.bs.modal", function () {
+    $("#modalCambiarEstado").on("hide.bs.modal", function() {
         // Limpiar el campo de observaciones y eliminar el evento clic del botón "Sí"
         $("#observaciones").val("");
         $("#btnConfirmarCambiarEstado").off("click");
         // Eliminar el evento de cambio en el combobox
         $("#estadoSelect").off("change");
     });
-
 });
 
 
