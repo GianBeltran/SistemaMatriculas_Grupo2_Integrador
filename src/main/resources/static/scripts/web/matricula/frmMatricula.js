@@ -202,6 +202,24 @@ function listarEstudiantes(){
     })
 }
 
+function listarCboGrados(idgrado){
+    $.ajax({
+        type: "GET",
+        url: "/grado/listar",
+        dataType: "json",
+        success: function(resultado){
+            $.each(resultado, function(index, value){
+                $("#cbogrados").append(
+                    `<option value="${value.idgrado}">${value.nomgrado}</option>`
+                )
+            });
+            if(idgrado > 0){
+                $("#cbogrados").val(idgrado);
+            }
+        }
+    });
+}
+
 ///////////////////////////////
 // Evento de clic para buscar por nombre
 $(document).on("click", "#btnbuscarNombre", function() {
@@ -309,104 +327,7 @@ function realizarFiltro(tipo, valor) {
     });
 }
 
-function llenarModalDetalles(detalles, noEditable) {
-    // Limpiar el contenido anterior del modal
-    $("#modalDetalles .modal-body").empty();
 
-    var fechaNacimientoFormateada = moment(detalles.fechanac).format("DD-MM-YYYY");
-    var fechaCreacionFormateada = moment(detalles.fechacrea).format("DD-MM-YYYY");
-
-    // Crear y agregar elementos HTML al modal para mostrar los detalles
-    var detallesHTML = "<ul>";
-    detallesHTML += "<li><strong>ID ESTUDIANTE:</strong> " + detalles.idestudiante + "</li>";
-    detallesHTML += "<br />"
-    detallesHTML += "<li><strong>NOMBRE:</strong> " + detalles.nomestudiante + "</li>";
-    detallesHTML += "<li><strong>APELLIDO:</strong> " + detalles.apeestudiante + "</li>";
-    detallesHTML += "<li><strong>EMAIL:</strong> " + detalles.email + "</li>";
-    detallesHTML += "<li><strong>TELÉFONO:</strong> " + detalles.telefono + "</li>";
-    detallesHTML += "<li><strong>FECHA DE NACIMIENTO:</strong> " + fechaNacimientoFormateada + "</li>";
-    detallesHTML += "<li><strong>DIRECCIÓN:</strong> " + detalles.direccion + "</li>";
-    detallesHTML += "<br />"
-    detallesHTML += "<li><strong>ACTIVO:</strong> " + detalles.activo + "</li>";
-    detallesHTML += "<li><strong>CREACIÓN DE REGISTRO:</strong> " + fechaCreacionFormateada + "</li>";
-    detallesHTML += "</ul>";
-
-    // Agregar detalles al cuerpo del modal
-    $("#modalDetalles .modal-body").html(detallesHTML);
-
-    // Mostrar el modal
-    $("#modalDetalles").modal("show");
-}
-
-
-$(document).on("click", ".btnDetalles", function () {
-    var detalles = {
-        idestudiante: $(this).attr("data-idestudiante"),
-        nomestudiante: $(this).attr("data-nomestudiante"),
-        apeestudiante: $(this).attr("data-apeestudiante"),
-        email: $(this).attr("data-email"),
-        telefono: $(this).attr("data-telefono"),
-        fechanac: $(this).attr("data-fechanac"),
-        direccion: $(this).attr("data-direccion"),
-        activo: $(this).attr("data-activo"),
-        fechacrea: $(this).attr("data-fechacrea"),
-    };
-
-    llenarModalDetalles(detalles, true); // true indica que los campos son no editables
-});
-
-
-$(document).on("click", "#btnMostrarInforme", function() {
-    // Realizar la solicitud AJAX para obtener todos los estudiantes
-    $.ajax({
-        type: "GET",
-        url: "/estudiante/listar",
-        dataType: "json",
-        success: function(resultado) {
-            // Llenar y mostrar el modal con el nuevo formato de lista desordenada
-            llenarModalInformeCompleto(resultado);
-            $("#modalInformeCompleto").modal("show");
-        },
-        error: function(xhr, status, error) {
-            console.error("Error al obtener el informe completo:", error);
-            alert("No se pudo obtener el informe completo. Por favor, inténtalo de nuevo más tarde.");
-        }
-    });
-});
-
-function llenarModalInformeCompleto(informeData) {
-    var columna1 = document.getElementById('columna1');
-    var columna2 = document.getElementById('columna2');
-
-    columna1.innerHTML = ''; // Limpiar contenido previo
-    columna2.innerHTML = ''; // Limpiar contenido previo
-
-    informeData.forEach(function (estudiante, index) {
-        var li = document.createElement('li');
-        li.className = 'list-group-item';
-        li.innerHTML = `
-            <strong>${estudiante.nomestudiante} ${estudiante.apeestudiante}</strong>
-            <ul>
-                <li>ID: ${estudiante.idestudiante}</li>
-                <li>Email: ${estudiante.email}</li>
-                <li>Teléfono: ${estudiante.telefono}</li>
-                <li>Fecha de Nacimiento: ${moment(estudiante.fechanac).format('DD-MM-YYYY')}</li>
-                <li>Dirección: ${estudiante.direccion}</li>
-                <br />
-                <li>Activo: ${estudiante.activo}</li>
-                <li>Creación Registro: ${moment(estudiante.fechacrea).format('DD-MM-YYYY')}</li>
-                <!-- Agrega más información si es necesario -->
-            </ul>
-            <hr />
-        `;
-
-        if (index % 2 === 0) {
-            columna1.appendChild(li);
-        } else {
-            columna2.appendChild(li);
-        }
-    });
-}
 
 
 });

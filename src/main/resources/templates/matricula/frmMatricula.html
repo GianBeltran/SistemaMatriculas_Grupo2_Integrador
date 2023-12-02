@@ -61,36 +61,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">ESTUDIANTE</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">MATRÍCULA</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="txtNombreEstudiante" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="txtNombreEstudiante" maxlength="50">
+                    <label for="cboestudiantes" class="form-label">ESTUDIANTE</label>
+                    <select id="cboestudiantes" class="form-control"></select>
                 </div>
                 <div class="mb-3">
-                    <label for="txtApellidoEstudiante" class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="txtApellidoEstudiante" maxlength="50">
+                    <label for="cbogrados" class="form-label">GRADO</label>
+                    <select id="cbogrados" class="form-control"></select>
                 </div>
-                <div class="mb-3">
-                    <label for="txtEmailEstudiante" class="form-label">Email</label>
-                    <input type="text" class="form-control" id="txtEmailEstudiante" placeholder="xxxxx@cibertec.edu.pe">
-                </div>
-                <div class="mb-3">
-                    <label for="txtTelefonoEstudiante" class="form-label">Telefono</label>
-                    <input type="text" class="form-control" id="txtTelefonoEstudiante" placeholder="xxx-xxx-xxx">
-                </div>
-                <div class="mb-3">
-                    <label for="txtFechaNacEstudiante" class="form-label">Fecha de nacimiento</label>
-                    <input type="text" class="form-control" id="txtFechaNacEstudiante" placeholder="Día-Mes-Año">
-                </div>
-                <div class="mb-3">
-                    <label for="txtDireccionEstudiante" class="form-label">Direccion</label>
-                    <input type="text" class="form-control" id="txtDireccionEstudiante">
-                </div>
-                <input type="hidden" id="hddcodestudiante" value="0">
+                <input type="hidden" id="hddcodmatricula" value="0">
             </div>
 
             <div class="modal-footer">
@@ -101,98 +85,57 @@
     </div>
 </div>
 
-<!-- Modals filtrar Estudiante -->
+<!-- Modals filtrar Estudiante GRADO-->
 <div class="modal fade" id="modalFiltrado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel3">ESTUDIANTE</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel3">MATRICULA</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="txtBuscarNombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="txtBuscarNombre">
+                    <label for="cbofiltradogrados" class="form-label">GRADO</label>
+                    <select id="cbofiltradogrados" class="form-control"></select>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
-                <button type="button" id="btnfiltrarnombre" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
+                <button type="button" id="btnfiltrargrado" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modals filtrar Estudiante -->
+<!-- Modals filtrar Estudiante ESTADO -->
 <div class="modal fade" id="modalFiltrado2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel4">ESTUDIANTE</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel4">MATRICULA</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="txtBuscarApellido" class="form-label">Apellido</label>
-                    <input type="text" class="form-control" id="txtBuscarApellido">
+                    <label for="cboestado" class="form-label">ESTADO</label>
+                    <select id="cboestado" class="form-control"></select>
                 </div>
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancelar</button>
-                <button type="button" id="btnfiltrarapellido" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
+                <button type="button" id="btnfiltrarestado" class="btn btn-primary"><i class="fas fa-save"></i> Filtrar</button>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Modals Detalles Estudiante -->
-<div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel5">ESTUDIANTE</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Informe Completo -->
-<div class="modal fade" id="modalInformeCompleto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel6">INFORME COMPLETO DE ESTUDIANTES</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6" id="columna1"></div>
-                    <div class="col-md-6" id="columna2"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <!-- Modal Cambiar Estado -->
 <div class="modal fade" id="modalCambiarEstado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel2">CAMBIAR ESTADO ESTUDIANTE</h5>
+                <h5 class="modal-title" id="exampleModalLabel2">CAMBIAR ESTADO MATRÍCULA</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
